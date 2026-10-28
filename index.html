@@ -1,699 +1,1124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScamShield AI - Think Before You Click</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: {
-                            950: '#070A13',
-                            900: '#0B1021',
-                            800: '#0F172A',
-                            700: '#1E293B',
-                            600: '#334155',
-                        },
-                        cyan: {
-                            glow: '#06B6D4',
-                            bright: '#22D3EE',
-                        },
-                        violet: {
-                            glow: '#8B5CF6',
-                            bright: '#A855F7',
-                        }
-                    },
-                    boxShadow: {
-                        'cyan-glow': '0 0 15px -3px rgba(34, 211, 238, 0.3)',
-                        'violet-glow': '0 0 15px -3px rgba(139, 92, 246, 0.3)',
-                        'card-glow': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Google Fonts: Inter & JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #070A13;
-            color: #E2E8F0;
-        }
-        .code-font {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0B1021;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1E293B;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #06B6D4;
-        }
-        /* Glassmorphism Effect */
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-        }
-        .glass-panel-hover:hover {
-            border-color: rgba(34, 211, 238, 0.3);
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
-        }
-        /* Pulse Animation */
-        @keyframes subtle-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        .animate-subtle-pulse {
-            animation: subtle-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-    </style>
-</head>
-<body class="h-screen flex overflow-hidden bg-navy-950 text-slate-200 select-none">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScamShield AI — Think Before You Click</title>
+  <style>
+    /* --- RESET & DESIGN SYSTEM VARIABLES --- */
+    :root {
+      --bg-dark: #070A13;
+      --bg-sidebar: #0B1021;
+      --bg-card: #0F172A;
+      --bg-card-hover: #1E293B;
+      
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(34, 211, 238, 0.3);
+      
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+      
+      --accent-cyan: #22D3EE;
+      --accent-cyan-glow: rgba(34, 211, 238, 0.15);
+      --accent-violet: #A855F7;
+      --accent-violet-glow: rgba(168, 85, 247, 0.15);
+      
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      --sidebar-width: 260px;
+      --transition-speed: 0.2s;
+    }
 
-    <!-- Mobile Sidebar Backdrop -->
-    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/70 z-40 hidden md:hidden transition-opacity duration-300"></div>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* --- APP LAYOUT --- */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* --- SIDEBAR STYLING --- */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform var(--transition-speed) ease;
+    }
+
+    .sidebar-brand {
+      padding: 1.5rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      flex-shrink: 0;
+    }
+
+    .brand-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: #000;
+    }
+
+    .brand-text h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .brand-text .tagline {
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+      display: block;
+    }
+
+    .nav-menu {
+      padding: 1rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      width: 100%;
+      transition: all var(--transition-speed) ease;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+    }
+
+    .nav-item.active {
+      background: linear-gradient(90deg, var(--accent-cyan-glow), transparent);
+      color: var(--accent-cyan);
+      border-left: 3px solid var(--accent-cyan);
+      border-top-left-radius: 2px;
+      border-bottom-left-radius: 2px;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10B981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10B981;
+    }
+
+    /* --- MAIN CONTENT & HEADER --- */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .top-header {
+      height: 64px;
+      padding: 0 1.5rem;
+      background-color: rgba(11, 16, 33, 0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .mobile-toggle {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+      padding: 0.25rem;
+    }
+
+    .mobile-toggle svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .header-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* --- CONTENT BODY & SECTIONS --- */
+    .content-body {
+      padding: 1.75rem;
+      flex-grow: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .view-section {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- CARDS & BADGES --- */
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.725rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .badge-privacy {
+      background-color: rgba(168, 85, 247, 0.12);
+      color: var(--accent-violet);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+    }
+
+    .badge-cyan {
+      background-color: var(--accent-cyan-glow);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+    }
+
+    .badge-step {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      margin-bottom: 0.75rem;
+    }
+
+    /* --- DASHBOARD HERO --- */
+    .dashboard-hero {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(11, 16, 33, 0.95)), 
+                  radial-gradient(circle at top right, rgba(34, 211, 238, 0.08), transparent 50%);
+      border: 1px solid var(--border-highlight);
+      margin-bottom: 2rem;
+    }
+
+    .hero-content h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+      color: var(--text-main);
+    }
+
+    .hero-content p {
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 1.25rem;
+      font-size: 0.95rem;
+    }
+
+    /* --- BUTTONS --- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-speed) ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), #06B6D4);
+      color: #070A13;
+      box-shadow: 0 0 12px rgba(34, 211, 238, 0.25);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.95;
+      box-shadow: 0 0 18px rgba(34, 211, 238, 0.4);
+    }
+
+    .btn-secondary {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      width: 100%;
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: var(--text-muted);
+    }
+
+    .btn-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* --- QUICK ACTION GRID --- */
+    .section-heading {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-main);
+    }
+
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .action-card {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-highlight);
+      background-color: var(--bg-card-hover);
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .card-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .icon-cyan {
+      background-color: var(--accent-cyan-glow);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(34, 211, 238, 0.2);
+    }
+
+    .icon-violet {
+      background-color: var(--accent-violet-glow);
+      color: var(--accent-violet);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+    }
+
+    .action-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: var(--text-main);
+    }
+
+    .action-card p {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+
+    /* --- DUAL GRID (PANELS) --- */
+    .dashboard-dual-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .panel-heading {
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-main);
+    }
+
+    .panel-heading-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--accent-cyan);
+    }
+
+    .reminders-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .reminders-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .reminder-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: var(--accent-cyan-glow);
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Activity Panel Empty State */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .empty-icon {
+      width: 36px;
+      height: 36px;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state .subtext {
+      font-size: 0.725rem;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
+    }
+
+    /* --- PRIVACY NOTICE --- */
+    .privacy-notice-card {
+      background-color: rgba(11, 16, 33, 0.6);
+      border-style: dashed;
+    }
+
+    .notice-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent-violet);
+    }
+
+    .notice-header svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .notice-header h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .privacy-notice-card p {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* --- PLACEHOLDER SECTIONS --- */
+    .placeholder-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      min-height: 380px;
+    }
+
+    .placeholder-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background-color: var(--accent-cyan-glow);
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .placeholder-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .placeholder-card h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .placeholder-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 420px;
+      margin-bottom: 1.75rem;
+    }
+
+    .back-to-dash {
+      width: auto !important;
+    }
+
+    /* --- RESPONSIVE STYLES --- */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 95;
+    }
+
+    @media (max-width: 850px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay.active {
+        display: block;
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .mobile-toggle {
+        display: block;
+      }
+
+      .content-body {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Overlay Backdrop -->
+  <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+  <!-- Main Container -->
+  <div class="app-container">
 
     <!-- Sidebar Navigation -->
-    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-64 bg-navy-900 border-r border-slate-800 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl">
-        <div>
-            <!-- Header & Branding -->
-            <div class="p-5 border-b border-slate-800/80 flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-600/30 border border-cyan-500/40 shadow-cyan-glow">
-                        <!-- Shield Icon -->
-                        <svg class="w-6 h-6 text-cyan-bright" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                        </svg>
-                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-cyan-bright rounded-full animate-ping"></span>
-                    </div>
-                    <div>
-                        <h1 class="font-bold text-lg text-white tracking-wide flex items-center gap-1.5">
-                            ScamShield <span class="text-xs px-1.5 py-0.5 rounded bg-violet-600/30 text-violet-bright border border-violet-500/30">AI</span>
-                        </h1>
-                        <p class="text-[10px] text-slate-400 font-medium tracking-tight">Think Before You Click.</p>
-                    </div>
-                </div>
-                <!-- Mobile Close Button -->
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white p-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-
-            <!-- Navigation Links -->
-            <nav class="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-140px)]">
-                <p class="px-3 py-2 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Core Navigation</p>
-                
-                <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-gradient-to-r from-cyan-500/20 to-transparent text-cyan-bright border-l-4 border-cyan-bright">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                    <span>Dashboard</span>
-                </button>
-
-                <button onclick="switchView('message-scanner')" id="nav-message-scanner" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
-                    <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                    <span>Message Scanner</span>
-                </button>
-
-                <button onclick="switchView('url-analyzer')" id="nav-url-analyzer" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
-                    <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-                    <span>URL Analyzer</span>
-                </button>
-
-                <button onclick="switchView('password-checker')" id="nav-password-checker" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
-                    <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                    <span>Password Checker</span>
-                </button>
-
-                <button onclick="switchView('safety-assistant')" id="nav-safety-assistant" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
-                    <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    <span>Safety Assistant</span>
-                </button>
-
-                <button onclick="switchView('emergency-help')" id="nav-emergency-help" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
-                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                    <span>Emergency Help</span>
-                </button>
-
-                <p class="px-3 pt-4 pb-2 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Resources</p>
-
-                <button onclick="switchView('demo-lab')" id="nav-demo-lab" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
-                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-                    <span>Demo Lab</span>
-                </button>
-
-                <button onclick="switchView('learning-hub')" id="nav-learning-hub" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
-                    <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                    <span>Learning Hub</span>
-                </button>
-            </nav>
+    <aside id="sidebar" class="sidebar" aria-label="Main Navigation">
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M12 8v4m0 4h.01"/>
+          </svg>
         </div>
-
-        <!-- Sidebar Footer Status -->
-        <div class="p-4 border-t border-slate-800/80 bg-navy-950/60">
-            <div class="flex items-center justify-between text-xs text-slate-400">
-                <span class="flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-subtle-pulse"></span> Engine Ready
-                </span>
-                <span class="code-font text-[10px] bg-slate-800 px-1.5 py-0.5 rounded text-cyan-400">v0.1-Step1</span>
-            </div>
+        <div class="brand-text">
+          <h1>ScamShield AI</h1>
+          <span class="tagline">Think Before You Click.</span>
         </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button type="button" class="nav-item active" data-target="dashboard-section">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          <span>Dashboard</span>
+        </button>
+
+        <button type="button" class="nav-item" data-target="message-scanner-section">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span>Message Scanner</span>
+        </button>
+
+        <button type="button" class="nav-item" data-target="url-analyzer-section">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          <span>URL Analyzer</span>
+        </button>
+
+        <button type="button" class="nav-item" data-target="password-checker-section">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>Password Checker</span>
+        </button>
+
+        <button type="button" class="nav-item" data-target="safety-assistant-section">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+          <span>Safety Assistant</span>
+        </button>
+
+        <button type="button" class="nav-item" data-target="emergency-help-section">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span>Emergency Help</span>
+        </button>
+
+        <button type="button" class="nav-item" data-target="demo-lab-section">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/>
+          </svg>
+          <span>Demo Lab</span>
+        </button>
+
+        <button type="button" class="nav-item" data-target="learning-hub-section">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+          <span>Learning Hub</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-indicator">
+          <span class="pulse-dot"></span>
+          <span>Engine Active (Step 2)</span>
+        </div>
+      </div>
     </aside>
 
-    <!-- Main Content Layout -->
-    <div class="flex-1 flex flex-col h-screen overflow-hidden">
-        
-        <!-- Top App Header Bar -->
-        <header class="h-16 border-b border-slate-800 bg-navy-900/80 backdrop-blur-md px-4 md:px-8 flex items-center justify-between z-10">
-            <div class="flex items-center space-x-3">
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-300 hover:text-white p-1.5 rounded-lg bg-slate-800/80">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    <!-- Main Content Area -->
+    <div class="main-content">
+      
+      <!-- Top Mobile Header -->
+      <header class="top-header">
+        <button type="button" id="mobile-menu-toggle" class="mobile-toggle" aria-label="Toggle navigation menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="header-title">
+          <span id="active-section-title">Dashboard</span>
+        </div>
+        <div class="badge badge-privacy">PRIVACY-FIRST DEMO</div>
+      </header>
+
+      <!-- View Sections -->
+      <main class="content-body">
+
+        <!-- 1. DASHBOARD SECTION -->
+        <section id="dashboard-section" class="view-section active">
+          
+          <!-- Hero Header -->
+          <div class="dashboard-hero card">
+            <div class="hero-content">
+              <span class="badge badge-cyan">Cybersecurity Hub</span>
+              <h2>Your Digital Safety Dashboard</h2>
+              <p>Check suspicious messages, inspect links, and learn how to stay safe online.</p>
+              <div class="hero-actions">
+                <button type="button" class="btn btn-primary nav-trigger" data-target="message-scanner-section">
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M9 12l2 2 4-4"/>
+                  </svg>
+                  <span>Start Security Check</span>
                 </button>
-                <div class="flex items-center space-x-2">
-                    <span id="current-view-title" class="text-lg font-semibold text-white">Dashboard</span>
-                    <span id="current-view-badge" class="hidden sm:inline-block text-[11px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-bright border border-cyan-500/20 font-medium">Overview</span>
-                </div>
+              </div>
             </div>
+          </div>
 
-            <!-- Header Quick Actions & Badges -->
-            <div class="flex items-center space-x-3">
-                <div class="hidden sm:flex items-center space-x-2 bg-navy-950 px-3 py-1.5 rounded-full border border-slate-800 text-xs">
-                    <span class="text-slate-400">Hackathon Mode:</span>
-                    <span class="text-violet-bright font-medium">College Demo</span>
-                </div>
-                <div class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>System Active</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Dynamic View Container -->
-        <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950">
+          <!-- Quick Action Cards Grid -->
+          <h3 class="section-heading">Quick Actions</h3>
+          <div class="quick-actions-grid">
             
-            <!-- SECTION 1: DASHBOARD VIEW -->
-            <div id="view-dashboard" class="space-y-6 max-w-7xl mx-auto">
-                
-                <!-- Welcome Banner -->
-                <div class="relative overflow-hidden rounded-2xl glass-panel p-6 md:p-8 border border-slate-700/50 shadow-card-glow">
-                    <div class="absolute -right-10 -top-10 w-60 h-60 bg-gradient-to-br from-cyan-500/10 to-violet-600/20 rounded-full blur-3xl pointer-events-none"></div>
-                    <div class="relative z-10 space-y-3">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright text-xs font-medium">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            Hackathon Initial Project Step 1
-                        </div>
-                        <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-                            Welcome to <span class="bg-gradient-to-r from-cyan-bright to-violet-bright bg-clip-text text-transparent">ScamShield AI</span>
-                        </h2>
-                        <p class="text-slate-300 max-w-2xl text-sm md:text-base leading-relaxed">
-                            Your intelligent defense against social engineering, malicious links, and phishing scams. Built to empower users to analyze threats effortlessly.
-                        </p>
-                        <div class="pt-2 flex flex-wrap gap-3">
-                            <button onclick="switchView('message-scanner')" class="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium text-sm shadow-cyan-glow transition-all flex items-center gap-2">
-                                <span>Try Message Scanner Preview</span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                            </button>
-                            <button onclick="switchView('demo-lab')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium text-sm transition-all">
-                                Open Demo Lab
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Stats Summary Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Stat 1 -->
-                    <div class="glass-panel p-4 rounded-xl border border-slate-800 flex items-center space-x-4">
-                        <div class="p-3 rounded-lg bg-cyan-500/10 text-cyan-bright border border-cyan-500/20">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">Protection Status</p>
-                            <p class="text-lg font-bold text-white flex items-center gap-2">
-                                Active <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-normal">Real-time</span>
-                            </p>
-                        </div>
-                    </div>
-                    <!-- Stat 2 -->
-                    <div class="glass-panel p-4 rounded-xl border border-slate-800 flex items-center space-x-4">
-                        <div class="p-3 rounded-lg bg-violet-500/10 text-violet-bright border border-violet-500/20">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">Scams Intercepted</p>
-                            <p class="text-lg font-bold text-white">0 <span class="text-xs text-slate-500 font-normal">(Demo Mode)</span></p>
-                        </div>
-                    </div>
-                    <!-- Stat 3 -->
-                    <div class="glass-panel p-4 rounded-xl border border-slate-800 flex items-center space-x-4">
-                        <div class="p-3 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">Threat Level</p>
-                            <p class="text-lg font-bold text-emerald-400">Low / Secure</p>
-                        </div>
-                    </div>
-                    <!-- Stat 4 -->
-                    <div class="glass-panel p-4 rounded-xl border border-slate-800 flex items-center space-x-4">
-                        <div class="p-3 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">Step 1 Stage</p>
-                            <p class="text-lg font-bold text-white">UI Foundation</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Planned Features Section Title -->
-                <div class="pt-4 flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xl font-bold text-white">Planned Application Features</h3>
-                        <p class="text-xs text-slate-400">Features scheduled for implementation in upcoming hackathon steps.</p>
-                    </div>
-                    <span class="text-xs code-font text-cyan-bright bg-cyan-500/10 border border-cyan-500/30 px-3 py-1 rounded-full">Step 1 Architecture</span>
-                </div>
-
-                <!-- Feature Cards Grid (7 Planned Modules) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    
-                    <!-- Card 1: Message Scanner -->
-                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                                </div>
-                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-cyan-400 border border-slate-700">Coming in Step 2+</span>
-                            </div>
-                            <h4 class="text-lg font-bold text-white group-hover:text-cyan-bright transition-colors">Message Scanner</h4>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                AI-driven analysis for suspicious SMS, emails, and WhatsApp messages to detect phishing attempts and psychological manipulation.
-                            </p>
-                        </div>
-                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
-                            <span class="text-[11px] text-slate-500 code-font">Module 01</span>
-                            <button onclick="switchView('message-scanner')" class="text-xs text-cyan-bright hover:underline font-medium flex items-center gap-1">
-                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Card 2: URL Analyzer -->
-                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-                                </div>
-                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-cyan-400 border border-slate-700">Coming in Step 2+</span>
-                            </div>
-                            <h4 class="text-lg font-bold text-white group-hover:text-cyan-bright transition-colors">URL Analyzer</h4>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                Inspect link structures, typosquatting domains, fake SSL certificates, and suspicious redirects before you click.
-                            </p>
-                        </div>
-                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
-                            <span class="text-[11px] text-slate-500 code-font">Module 02</span>
-                            <button onclick="switchView('url-analyzer')" class="text-xs text-cyan-bright hover:underline font-medium flex items-center gap-1">
-                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Card 3: Password Checker -->
-                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                                </div>
-                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-violet-400 border border-slate-700">Coming in Step 2+</span>
-                            </div>
-                            <h4 class="text-lg font-bold text-white group-hover:text-violet-bright transition-colors">Password Checker</h4>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                Test credential strength, calculate crack entropy, and check for common breach patterns offline securely.
-                            </p>
-                        </div>
-                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
-                            <span class="text-[11px] text-slate-500 code-font">Module 03</span>
-                            <button onclick="switchView('password-checker')" class="text-xs text-violet-bright hover:underline font-medium flex items-center gap-1">
-                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Card 4: Safety Assistant -->
-                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                </div>
-                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-violet-400 border border-slate-700">Coming in Step 2+</span>
-                            </div>
-                            <h4 class="text-lg font-bold text-white group-hover:text-violet-bright transition-colors">Safety Assistant</h4>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                An interactive AI safety guide providing immediate rules of thumb for online transactions and personal privacy.
-                            </p>
-                        </div>
-                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
-                            <span class="text-[11px] text-slate-500 code-font">Module 04</span>
-                            <button onclick="switchView('safety-assistant')" class="text-xs text-violet-bright hover:underline font-medium flex items-center gap-1">
-                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Card 5: Emergency Help -->
-                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                                </div>
-                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-red-400 border border-slate-700">Coming in Step 2+</span>
-                            </div>
-                            <h4 class="text-lg font-bold text-white group-hover:text-red-400 transition-colors">Emergency Help</h4>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                Immediate response steps if you clicked a dangerous link, leaked credentials, or lost money to a cyber scam.
-                            </p>
-                        </div>
-                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
-                            <span class="text-[11px] text-slate-500 code-font">Module 05</span>
-                            <button onclick="switchView('emergency-help')" class="text-xs text-red-400 hover:underline font-medium flex items-center gap-1">
-                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Card 6: Demo Lab -->
-                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-                                </div>
-                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-cyan-400 border border-slate-700">Coming in Step 2+</span>
-                            </div>
-                            <h4 class="text-lg font-bold text-white group-hover:text-cyan-bright transition-colors">Demo Lab</h4>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                Pre-loaded scam message samples and malicious URL cases for hackathon judge presentations.
-                            </p>
-                        </div>
-                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
-                            <span class="text-[11px] text-slate-500 code-font">Module 06</span>
-                            <button onclick="switchView('demo-lab')" class="text-xs text-cyan-bright hover:underline font-medium flex items-center gap-1">
-                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Card 7: Learning Hub -->
-                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group lg:col-span-1 md:col-span-2">
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                                </div>
-                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-violet-400 border border-slate-700">Coming in Step 2+</span>
-                            </div>
-                            <h4 class="text-lg font-bold text-white group-hover:text-violet-bright transition-colors">Learning Hub</h4>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                Educational breakdown of real-world scam techniques including bank impersonation, lottery scams, and job offer fraud.
-                            </p>
-                        </div>
-                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
-                            <span class="text-[11px] text-slate-500 code-font">Module 07</span>
-                            <button onclick="switchView('learning-hub')" class="text-xs text-violet-bright hover:underline font-medium flex items-center gap-1">
-                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
+            <div class="action-card card nav-trigger" data-target="message-scanner-section" role="button" tabindex="0">
+              <div class="card-icon icon-cyan">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+              </div>
+              <h4>Scan a Message</h4>
+              <p>Check messages for common scam warning signs.</p>
+              <button type="button" class="btn btn-secondary">Open Scanner</button>
             </div>
 
-            <!-- PLACEHOLDER VIEWS FOR UPCOMING FEATURES -->
-
-            <!-- Section: Message Scanner -->
-            <div id="view-message-scanner" class="hidden max-w-4xl mx-auto space-y-6">
-                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
-                    <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center mx-auto shadow-cyan-glow">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                    </div>
-                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-cyan-400 text-xs font-semibold">Under Development - Coming in future steps</span>
-                    <h3 class="text-2xl font-bold text-white">Message Scanner Module</h3>
-                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
-                        This module will allow users to paste suspicious SMS messages or emails. The engine will scan for urgency triggers, dangerous links, and spoofing patterns.
-                    </p>
-                    <div class="p-4 bg-navy-950/80 rounded-xl border border-slate-800 max-w-lg mx-auto text-left space-y-2 text-xs">
-                        <div class="text-slate-300 font-semibold flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-cyan-bright"></span> Planned Capabilities for Step 2:
-                        </div>
-                        <ul class="list-disc list-inside text-slate-400 space-y-1 pl-2">
-                            <li>NLP urgency and threat detection</li>
-                            <li>SMS and email text pasting interface</li>
-                            <li>Risk level calculation (Safe, Suspicious, Critical)</li>
-                        </ul>
-                    </div>
-                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                        Back to Dashboard
-                    </button>
-                </div>
+            <div class="action-card card nav-trigger" data-target="url-analyzer-section" role="button" tabindex="0">
+              <div class="card-icon icon-violet">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+              </div>
+              <h4>Check a URL</h4>
+              <p>Review a link for common phishing warning signs.</p>
+              <button type="button" class="btn btn-secondary">Check URL</button>
             </div>
 
-            <!-- Section: URL Analyzer -->
-            <div id="view-url-analyzer" class="hidden max-w-4xl mx-auto space-y-6">
-                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
-                    <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center mx-auto shadow-cyan-glow">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-                    </div>
-                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-cyan-400 text-xs font-semibold">Under Development - Coming in future steps</span>
-                    <h3 class="text-2xl font-bold text-white">URL Analyzer Module</h3>
-                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
-                        This module will analyze web links for typosquatting (e.g. paypa1.com), suspicious TLDs, IP-based URLs, and credential harvesting forms.
-                    </p>
-                    <div class="p-4 bg-navy-950/80 rounded-xl border border-slate-800 max-w-lg mx-auto text-left space-y-2 text-xs">
-                        <div class="text-slate-300 font-semibold flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-cyan-bright"></span> Planned Capabilities for Step 3:
-                        </div>
-                        <ul class="list-disc list-inside text-slate-400 space-y-1 pl-2">
-                            <li>Domain structure & character anomaly parsing</li>
-                            <li>HTTPS & TLD risk scoring</li>
-                            <li>Visual safety indicator breakdown</li>
-                        </ul>
-                    </div>
-                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                        Back to Dashboard
-                    </button>
-                </div>
+            <div class="action-card card nav-trigger" data-target="password-checker-section" role="button" tabindex="0">
+              <div class="card-icon icon-cyan">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <h4>Password Checker</h4>
+              <p>Learn about password strength and security.</p>
+              <button type="button" class="btn btn-secondary">Check Strength</button>
             </div>
 
-            <!-- Section: Password Checker -->
-            <div id="view-password-checker" class="hidden max-w-4xl mx-auto space-y-6">
-                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
-                    <div class="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center mx-auto shadow-violet-glow">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                    </div>
-                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-violet-400 text-xs font-semibold">Under Development - Coming in future steps</span>
-                    <h3 class="text-2xl font-bold text-white">Password Checker Module</h3>
-                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
-                        Evaluates password strength entirely client-side without transmitting plain-text passwords to any network server.
-                    </p>
-                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                        Back to Dashboard
-                    </button>
-                </div>
+            <div class="action-card card nav-trigger" data-target="safety-assistant-section" role="button" tabindex="0">
+              <div class="card-icon icon-violet">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="M9 12l2 2 4-4"/>
+                </svg>
+              </div>
+              <h4>Cyber Safety</h4>
+              <p>Explore practical tips to stay safer online.</p>
+              <button type="button" class="btn btn-secondary">Learn More</button>
             </div>
 
-            <!-- Section: Safety Assistant -->
-            <div id="view-safety-assistant" class="hidden max-w-4xl mx-auto space-y-6">
-                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
-                    <div class="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center mx-auto shadow-violet-glow">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    </div>
-                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-violet-400 text-xs font-semibold">Under Development - Coming in future steps</span>
-                    <h3 class="text-2xl font-bold text-white">Safety Assistant Module</h3>
-                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
-                        Interactive guidance to query security best practices, verify digital payment safety, and prevent social engineering traps.
-                    </p>
-                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                        Back to Dashboard
-                    </button>
-                </div>
+          </div>
+
+          <!-- Bottom Dashboard Sections: Awareness & Activity -->
+          <div class="dashboard-dual-grid">
+            
+            <!-- Security Awareness Panel -->
+            <div class="card safety-panel">
+              <h3 class="panel-heading">
+                <svg class="panel-heading-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="16" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                Stay Safe Online
+              </h3>
+              <ul class="reminders-list">
+                <li>
+                  <div class="reminder-icon">1</div>
+                  <span>Never share your OTP, banking PIN, or passwords with anyone.</span>
+                </li>
+                <li>
+                  <div class="reminder-icon">2</div>
+                  <span>Verify suspicious links before opening them.</span>
+                </li>
+                <li>
+                  <div class="reminder-icon">3</div>
+                  <span>Be cautious of urgent messages demanding immediate payments.</span>
+                </li>
+              </ul>
             </div>
 
-            <!-- Section: Emergency Help -->
-            <div id="view-emergency-help" class="hidden max-w-4xl mx-auto space-y-6">
-                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
-                    <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 flex items-center justify-center mx-auto">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                    </div>
-                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-red-400 text-xs font-semibold">Under Development - Coming in future steps</span>
-                    <h3 class="text-2xl font-bold text-white">Emergency Help Checklist</h3>
-                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
-                        Step-by-step triage protocol if you have already been compromised (e.g. freeze cards, change critical passwords, report to cyber cell).
-                    </p>
-                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                        Back to Dashboard
-                    </button>
-                </div>
+            <!-- Recent Activity Panel -->
+            <div class="card activity-panel">
+              <h3 class="panel-heading">
+                <svg class="panel-heading-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                Recent Activity
+              </h3>
+              <div class="empty-state">
+                <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="4" width="18" height="16" rx="2"/>
+                  <line x1="7" y1="8" x2="17" y2="8"/>
+                  <line x1="7" y1="12" x2="13" y2="12"/>
+                </svg>
+                <p>Your activity will appear here as you use the app.</p>
+                <span class="subtext">Demonstration data mode</span>
+              </div>
             </div>
 
-            <!-- Section: Demo Lab -->
-            <div id="view-demo-lab" class="hidden max-w-4xl mx-auto space-y-6">
-                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
-                    <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center mx-auto shadow-cyan-glow">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-                    </div>
-                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-cyan-400 text-xs font-semibold">Under Development - Coming in future steps</span>
-                    <h3 class="text-2xl font-bold text-white">Hackathon Demo Lab</h3>
-                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
-                        A dedicated sandbox loaded with preset scam datasets for fast demonstration during live hackathon judge reviews.
-                    </p>
-                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                        Back to Dashboard
-                    </button>
-                </div>
-            </div>
+          </div>
 
-            <!-- Section: Learning Hub -->
-            <div id="view-learning-hub" class="hidden max-w-4xl mx-auto space-y-6">
-                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
-                    <div class="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center mx-auto shadow-violet-glow">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                    </div>
-                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-violet-400 text-xs font-semibold">Under Development - Coming in future steps</span>
-                    <h3 class="text-2xl font-bold text-white">Cybersecurity Learning Hub</h3>
-                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
-                        Interactive lessons on common fraud patterns, digital safety hygiene, and practical tips for identifying online threats.
-                    </p>
-                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                        Back to Dashboard
-                    </button>
-                </div>
+          <!-- Privacy Notice Footer Card -->
+          <div class="card privacy-notice-card">
+            <div class="notice-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <h4>Privacy First Guarantee</h4>
             </div>
+            <p>Your privacy matters. This project is designed to perform supported checks locally in your browser. Never enter real passwords, OTPs, banking details, or other sensitive information into a hackathon demo.</p>
+          </div>
 
-        </main>
+        </section>
+
+        <!-- 2. PLACEHOLDER: MESSAGE SCANNER -->
+        <section id="message-scanner-section" class="view-section">
+          <div class="card placeholder-card">
+            <div class="placeholder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <span class="badge badge-step">Planned Module</span>
+            <h2>Message Scanner</h2>
+            <p class="placeholder-desc">Scam message analysis will be implemented in Step 3.</p>
+            <button type="button" class="btn btn-secondary back-to-dash">Return to Dashboard</button>
+          </div>
+        </section>
+
+        <!-- 3. PLACEHOLDER: URL ANALYZER -->
+        <section id="url-analyzer-section" class="view-section">
+          <div class="card placeholder-card">
+            <div class="placeholder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+            </div>
+            <span class="badge badge-step">Planned Module</span>
+            <h2>URL Analyzer</h2>
+            <p class="placeholder-desc">URL analysis will be implemented in Step 4.</p>
+            <button type="button" class="btn btn-secondary back-to-dash">Return to Dashboard</button>
+          </div>
+        </section>
+
+        <!-- 4. PLACEHOLDER: PASSWORD CHECKER -->
+        <section id="password-checker-section" class="view-section">
+          <div class="card placeholder-card">
+            <div class="placeholder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <span class="badge badge-step">Planned Module</span>
+            <h2>Password Checker</h2>
+            <p class="placeholder-desc">Password strength checking will be implemented in Step 5.</p>
+            <button type="button" class="btn btn-secondary back-to-dash">Return to Dashboard</button>
+          </div>
+        </section>
+
+        <!-- 5. PLACEHOLDER: SAFETY ASSISTANT -->
+        <section id="safety-assistant-section" class="view-section">
+          <div class="card placeholder-card">
+            <div class="placeholder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="M9 12l2 2 4-4"/>
+              </svg>
+            </div>
+            <span class="badge badge-step">Planned Module</span>
+            <h2>Safety Assistant</h2>
+            <p class="placeholder-desc">Cyber safety guidance will be implemented in Step 6.</p>
+            <button type="button" class="btn btn-secondary back-to-dash">Return to Dashboard</button>
+          </div>
+        </section>
+
+        <!-- 6. PLACEHOLDER: EMERGENCY HELP -->
+        <section id="emergency-help-section" class="view-section">
+          <div class="card placeholder-card">
+            <div class="placeholder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </div>
+            <span class="badge badge-step">Planned Module</span>
+            <h2>Emergency Help</h2>
+            <p class="placeholder-desc">Cyber fraud emergency guidance will be implemented in Step 7.</p>
+            <button type="button" class="btn btn-secondary back-to-dash">Return to Dashboard</button>
+          </div>
+        </section>
+
+        <!-- 7. PLACEHOLDER: DEMO LAB -->
+        <section id="demo-lab-section" class="view-section">
+          <div class="card placeholder-card">
+            <div class="placeholder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/>
+              </svg>
+            </div>
+            <span class="badge badge-step">Planned Module</span>
+            <h2>Demo Lab</h2>
+            <p class="placeholder-desc">Interactive cybersecurity demonstrations will be added in a later step.</p>
+            <button type="button" class="btn btn-secondary back-to-dash">Return to Dashboard</button>
+          </div>
+        </section>
+
+        <!-- 8. PLACEHOLDER: LEARNING HUB -->
+        <section id="learning-hub-section" class="view-section">
+          <div class="card placeholder-card">
+            <div class="placeholder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </div>
+            <span class="badge badge-step">Planned Module</span>
+            <h2>Learning Hub</h2>
+            <p class="placeholder-desc">Cybersecurity learning resources and language options will be added in Step 8.</p>
+            <button type="button" class="btn btn-secondary back-to-dash">Return to Dashboard</button>
+          </div>
+        </section>
+
+      </main>
     </div>
+  </div>
 
-    <!-- JavaScript Navigation Logic -->
-    <script>
-        // List of all section view IDs
-        const viewIds = [
-            'dashboard',
-            'message-scanner',
-            'url-analyzer',
-            'password-checker',
-            'safety-assistant',
-            'emergency-help',
-            'demo-lab',
-            'learning-hub'
-        ];
+  <script>
+    /**
+     * ScamShield AI — Step 2 Navigation & Interactive Engine
+     * Standard Vanilla JS (No External Libraries)
+     */
 
-        // Format View Titles for Header
-        const viewTitles = {
-            'dashboard': 'Dashboard Overview',
-            'message-scanner': 'Message Scanner Module',
-            'url-analyzer': 'URL Analyzer Module',
-            'password-checker': 'Password Checker Module',
-            'safety-assistant': 'Safety Assistant Module',
-            'emergency-help': 'Emergency Help Checklist',
-            'demo-lab': 'Hackathon Demo Lab',
-            'learning-hub': 'Learning Hub'
-        };
+    document.addEventListener('DOMContentLoaded', () => {
 
-        /**
-         * Switches the active view cleanly and updates sidebar navigation styles.
-         * @param {string} targetViewId - The target section name.
-         */
-        function switchView(targetViewId) {
-            // Hide all views and remove active state from sidebar buttons
-            viewIds.forEach(id => {
-                const viewEl = document.getElementById(`view-${id}`);
-                const navEl = document.getElementById(`nav-${id}`);
+      // UI Elements
+      const navItems = document.querySelectorAll('.nav-item');
+      const viewSections = document.querySelectorAll('.view-section');
+      const navTriggers = document.querySelectorAll('.nav-trigger');
+      const backToDashBtns = document.querySelectorAll('.back-to-dash');
+      
+      const mobileToggle = document.getElementById('mobile-menu-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      const activeSectionTitle = document.getElementById('active-section-title');
 
-                if (viewEl) {
-                    viewEl.classList.add('hidden');
-                }
+      /**
+       * Title Map matching navigation targets
+       */
+      const sectionTitles = {
+        'dashboard-section': 'Dashboard',
+        'message-scanner-section': 'Message Scanner',
+        'url-analyzer-section': 'URL Analyzer',
+        'password-checker-section': 'Password Checker',
+        'safety-assistant-section': 'Safety Assistant',
+        'emergency-help-section': 'Emergency Help',
+        'demo-lab-section': 'Demo Lab',
+        'learning-hub-section': 'Learning Hub'
+      };
 
-                if (navEl) {
-                    navEl.className = "nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all";
-                }
-            });
+      /**
+       * Switch active view and update navigation states
+       * @param {string} targetSectionId 
+       */
+      function navigateToSection(targetSectionId) {
+        if (!targetSectionId) return;
 
-            // Reveal active view
-            const activeView = document.getElementById(`view-${targetViewId}`);
-            if (activeView) {
-                activeView.classList.remove('hidden');
-            }
+        // 1. Hide all view sections
+        viewSections.forEach(section => {
+          section.classList.remove('active');
+        });
 
-            // Highlight active sidebar navigation button
-            const activeNav = document.getElementById(`nav-${targetViewId}`);
-            if (activeNav) {
-                activeNav.className = "nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-gradient-to-r from-cyan-500/20 to-transparent text-cyan-bright border-l-4 border-cyan-bright font-semibold";
-            }
-
-            // Update top bar title & badge text
-            const titleEl = document.getElementById('current-view-title');
-            const badgeEl = document.getElementById('current-view-badge');
-            if (titleEl) {
-                titleEl.textContent = viewTitles[targetViewId] || 'ScamShield AI';
-            }
-            if (badgeEl) {
-                badgeEl.textContent = targetViewId === 'dashboard' ? 'Overview' : 'Preview Step';
-            }
-
-            // Auto-close mobile sidebar after selection
-            const sidebar = document.getElementById('sidebar');
-            const backdrop = document.getElementById('sidebarBackdrop');
-            if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.add('-translate-x-full');
-                if (backdrop) backdrop.classList.add('hidden');
-            }
-
-            // Scroll main container to top
-            const mainContainer = document.querySelector('main');
-            if (mainContainer) mainContainer.scrollTop = 0;
+        // 2. Show target section if it exists
+        const targetSection = document.getElementById(targetSectionId);
+        if (targetSection) {
+          targetSection.classList.add('active');
         }
 
-        /**
-         * Toggles mobile drawer view for responsiveness.
-         */
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const backdrop = document.getElementById('sidebarBackdrop');
-            if (sidebar) {
-                sidebar.classList.toggle('-translate-x-full');
-            }
-            if (backdrop) {
-                backdrop.classList.toggle('hidden');
-            }
+        // 3. Update sidebar active nav styling
+        navItems.forEach(item => {
+          if (item.getAttribute('data-target') === targetSectionId) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+
+        // 4. Update Header Title
+        if (activeSectionTitle && sectionTitles[targetSectionId]) {
+          activeSectionTitle.textContent = sectionTitles[targetSectionId];
         }
-    </script>
+
+        // 5. Scroll page view back to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // 6. Automatically close mobile drawer on navigation
+        closeMobileSidebar();
+      }
+
+      /**
+       * Open Mobile Sidebar Menu
+       */
+      function openMobileSidebar() {
+        if (sidebar && sidebarOverlay) {
+          sidebar.classList.add('open');
+          sidebarOverlay.classList.add('active');
+          sidebarOverlay.setAttribute('aria-hidden', 'false');
+        }
+      }
+
+      /**
+       * Close Mobile Sidebar Menu
+       */
+      function closeMobileSidebar() {
+        if (sidebar && sidebarOverlay) {
+          sidebar.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+          sidebarOverlay.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      /* --- EVENT LISTENERS --- */
+
+      // Sidebar Menu Clicks
+      navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          const target = e.currentTarget.getAttribute('data-target');
+          navigateToSection(target);
+        });
+      });
+
+      // Action Cards & Start Security Check Buttons
+      navTriggers.forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+          const target = e.currentTarget.getAttribute('data-target');
+          navigateToSection(target);
+        });
+
+        // Support accessibility key navigation (Enter or Space)
+        trigger.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            const target = e.currentTarget.getAttribute('data-target');
+            navigateToSection(target);
+          }
+        });
+      });
+
+      // "Return to Dashboard" Buttons in Placeholders
+      backToDashBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          navigateToSection('dashboard-section');
+        });
+      });
+
+      // Mobile Toggle & Overlay Events
+      if (mobileToggle) {
+        mobileToggle.addEventListener('click', () => {
+          if (sidebar.classList.contains('open')) {
+            closeMobileSidebar();
+          } else {
+            openMobileSidebar();
+          }
+        });
+      }
+
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', closeMobileSidebar);
+      }
+
+    });
+  </script>
 </body>
 </html>
