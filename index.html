@@ -521,21 +521,21 @@
       line-height: 1.4;
     }
 
-    /* --- STEP 3: MESSAGE SCANNER STYLES --- */
-    .scanner-container {
+    /* --- STEP 3 & 4: SCANNER & ANALYZER STYLES --- */
+    .scanner-container, .analyzer-container {
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
     }
 
-    .scanner-header h2 {
+    .scanner-header h2, .analyzer-header h2 {
       font-size: 1.5rem;
       font-weight: 700;
       margin: 0.35rem 0;
       color: var(--text-main);
     }
 
-    .scanner-header p {
+    .scanner-header p, .analyzer-header p {
       color: var(--text-muted);
       font-size: 0.925rem;
     }
@@ -629,6 +629,31 @@
 
     .scanner-privacy-banner strong {
       color: var(--text-main);
+    }
+
+    /* URL Analyzer Input Row */
+    .url-input-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .url-input {
+      flex-grow: 1;
+      background-color: rgba(7, 10, 19, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text-main);
+      font-family: var(--font-family);
+      font-size: 0.925rem;
+      transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    }
+
+    .url-input:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan-glow);
     }
 
     /* --- RESULTS PANEL STYLES --- */
@@ -730,6 +755,38 @@
       transition: width 0.5s ease, background-color 0.3s ease;
     }
 
+    /* URL Overview Grid */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .overview-item {
+      background-color: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .overview-label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .overview-value {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-main);
+      word-break: break-all;
+    }
+
     .results-section-block {
       margin-bottom: 1.5rem;
     }
@@ -780,17 +837,6 @@
     .signal-desc {
       font-size: 0.825rem;
       color: var(--text-muted);
-    }
-
-    .signal-match {
-      font-size: 0.775rem;
-      color: var(--text-dim);
-      font-family: monospace;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      display: inline-block;
-      margin-top: 0.2rem;
     }
 
     .empty-signals {
@@ -991,6 +1037,14 @@
         padding-bottom: 0.75rem;
         width: 100%;
       }
+      
+      .url-input-row {
+        flex-direction: column;
+      }
+      
+      .url-input-row .btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -1087,7 +1141,7 @@
       <div class="sidebar-footer">
         <div class="status-indicator">
           <span class="pulse-dot"></span>
-          <span>Engine Active (Step 3)</span>
+          <span>Engine Active (Step 4)</span>
         </div>
       </div>
     </aside>
@@ -1377,19 +1431,161 @@
           </div>
         </section>
 
-        <!-- 3. PLACEHOLDER: URL ANALYZER -->
+        <!-- 3. URL ANALYZER SECTION (Step 4 Implemented) -->
         <section id="url-analyzer-section" class="view-section">
-          <div class="card placeholder-card">
-            <div class="placeholder-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-              </svg>
+          <div class="card analyzer-container">
+            <div class="analyzer-header">
+              <span class="badge badge-cyan">Step 4 Module</span>
+              <h2>Phishing URL Analyzer</h2>
+              <p>Inspect a suspicious link for common warning signs before deciding what to do.</p>
             </div>
-            <span class="badge badge-step">Planned Module</span>
-            <h2>URL Analyzer</h2>
-            <p class="placeholder-desc">URL analysis will be implemented in Step 4.</p>
-            <button type="button" class="btn btn-secondary back-to-dash">Return to Dashboard</button>
+
+            <!-- URL Input Form -->
+            <div class="scanner-form-group">
+              <label for="url-input" class="form-label">Suspicious URL Link</label>
+              <div class="url-input-row">
+                <input 
+                  type="text" 
+                  id="url-input" 
+                  class="url-input" 
+                  placeholder="https://example.com"
+                  aria-label="Suspicious URL input link">
+                <button type="button" id="url-analyze-btn" class="btn btn-primary">
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <span>Analyze URL</span>
+                </button>
+              </div>
+              <div class="textarea-footer">
+                <span id="url-error-msg" class="input-error-msg" style="display: none;">Please enter a valid URL (starting with http:// or https://).</span>
+                <span>Offline local heuristic inspection</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="scanner-actions">
+              <button type="button" id="url-clear-btn" class="btn btn-secondary">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                <span>Clear</span>
+              </button>
+              <button type="button" id="url-demo-btn" class="btn btn-secondary">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <span>Try Demo URL</span>
+              </button>
+            </div>
+
+            <!-- Privacy Notice Banner -->
+            <div class="scanner-privacy-banner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <span><strong>Privacy Notice:</strong> Never open an unfamiliar link just to test it. This tool inspects the URL text without visiting the website. Processed locally in your browser.</span>
+            </div>
+
+            <!-- URL Results Panel (Hidden by default) -->
+            <div id="url-results" class="scanner-results" style="display: none;">
+              <div class="results-divider"></div>
+              
+              <div class="results-header-row">
+                <h3>URL Analysis Results</h3>
+                <span id="url-risk-badge" class="badge">Few Warning Signs</span>
+              </div>
+
+              <!-- Score Card -->
+              <div class="score-card card">
+                <div class="score-left">
+                  <span class="score-number" id="url-score-val">0</span>
+                  <span class="score-max">/ 100</span>
+                </div>
+                <div class="score-right">
+                  <h4 id="url-risk-title">Few warning signs detected</h4>
+                  <p class="score-disclaimer">Rule-based warning score — not a probability of fraud. This offline tool cannot verify the reputation or ownership of a website.</p>
+                  <div class="score-bar-container">
+                    <div id="url-score-bar" class="score-bar-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- URL Overview Grid -->
+              <div class="results-section-block">
+                <h4>URL Structure Overview</h4>
+                <div class="overview-grid">
+                  <div class="overview-item">
+                    <span class="overview-label">Parsed Hostname</span>
+                    <span id="ov-hostname" class="overview-value">-</span>
+                  </div>
+                  <div class="overview-item">
+                    <span class="overview-label">Protocol</span>
+                    <span id="ov-protocol" class="overview-value">-</span>
+                  </div>
+                  <div class="overview-item">
+                    <span class="overview-label">Secure (HTTPS)</span>
+                    <span id="ov-https" class="overview-value">-</span>
+                  </div>
+                  <div class="overview-item">
+                    <span class="overview-label">Port Status</span>
+                    <span id="ov-port" class="overview-value">-</span>
+                  </div>
+                  <div class="overview-item">
+                    <span class="overview-label">IP Address</span>
+                    <span id="ov-ip" class="overview-value">-</span>
+                  </div>
+                  <div class="overview-item">
+                    <span class="overview-label">Shortened Link</span>
+                    <span id="ov-short" class="overview-value">-</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Detected Signals List -->
+              <div class="results-section-block">
+                <h4>Detected Warning Signs (<span id="url-signal-count">0</span>)</h4>
+                <div id="url-signals-list" class="signals-list">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+
+              <!-- Recommended Actions -->
+              <div class="results-section-block recommendations-block">
+                <h4>Recommended Actions</h4>
+                <ul id="url-recommendations-list" class="recommendations-list">
+                  <!-- Populated via JS -->
+                </ul>
+              </div>
+
+              <!-- How This Score Works (Accordion) -->
+              <div class="accordion-container">
+                <button type="button" id="url-accordion-toggle" class="accordion-toggle">
+                  <span>How this score works (URL heuristic breakdown)</span>
+                  <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </button>
+                <div id="url-accordion-content" class="accordion-content" style="display: none;">
+                  <p>ScamShield AI's URL Analyzer uses a deterministic offline heuristic inspection engine to evaluate link structures:</p>
+                  <ul>
+                    <li><strong>IP-Address Hostnames (Weight 25):</strong> Direct numeric IP links often bypass typical domain registration transparency.</li>
+                    <li><strong>Embedded User Info (Weight 25):</strong> `@` symbols in URLs can mask the actual destination domain.</li>
+                    <li><strong>Suspicious Keywords (Weight 20):</strong> Words like 'login', 'verify', 'secure', 'account' in unconventional path contexts.</li>
+                    <li><strong>Excessive Subdomains (Weight 20):</strong> Multiple nested subdomains designed to imitate trusted brands.</li>
+                    <li><strong>Non-Standard Ports (Weight 20):</strong> Ports outside standard web traffic (80/443) used in unexpected services.</li>
+                    <li><strong>Shortened Links (Weight 15):</strong> Obfuscated redirect links where the destination isn't immediately visible.</li>
+                    <li><strong>HTTP Protocol (Weight 15):</strong> Unencrypted connections lacking TLS security.</li>
+                    <li><strong>Punycode / Internationalized Domain (Weight 15):</strong> 'xn--' prefixes that can facilitate homograph spoofing.</li>
+                  </ul>
+                  <p class="accordion-note">Scores are capped at 100. Legitimate sites may trigger some heuristic warnings, and sophisticated phishing URLs can appear clean. Always verify destinations independently.</p>
+                </div>
+              </div>
+
+            </div>
+
           </div>
         </section>
 
@@ -1479,7 +1675,7 @@
 
   <script>
     /**
-     * ScamShield AI — Step 3 Navigation & Message Scanner Engine
+     * ScamShield AI — Steps 1-4 Navigation, Message Scanner & Phishing URL Analyzer Engine
      * Standard Vanilla JS (No External Libraries)
      */
 
@@ -1496,7 +1692,7 @@
       const sidebarOverlay = document.getElementById('sidebar-overlay');
       const activeSectionTitle = document.getElementById('active-section-title');
 
-      // Scanner Elements
+      // Scanner Elements (Step 3)
       const messageInput = document.getElementById('message-input');
       const charCounter = document.getElementById('char-counter');
       const inputError = document.getElementById('input-error');
@@ -1516,6 +1712,33 @@
       const accordionToggle = document.getElementById('accordion-toggle');
       const accordionContent = document.getElementById('accordion-content');
       const chevronIcon = document.querySelector('.chevron-icon');
+
+      // URL Analyzer Elements (Step 4)
+      const urlInput = document.getElementById('url-input');
+      const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
+      const urlClearBtn = document.getElementById('url-clear-btn');
+      const urlDemoBtn = document.getElementById('url-demo-btn');
+      const urlErrorMsg = document.getElementById('url-error-msg');
+      const urlResults = document.getElementById('url-results');
+
+      const urlRiskBadge = document.getElementById('url-risk-badge');
+      const urlScoreVal = document.getElementById('url-score-val');
+      const urlRiskTitle = document.getElementById('url-risk-title');
+      const urlScoreBar = document.getElementById('url-score-bar');
+      const urlSignalCount = document.getElementById('url-signal-count');
+      const urlSignalsList = document.getElementById('url-signals-list');
+      const urlRecommendationsList = document.getElementById('url-recommendations-list');
+
+      const ovHostname = document.getElementById('ov-hostname');
+      const ovProtocol = document.getElementById('ov-protocol');
+      const ovHttps = document.getElementById('ov-https');
+      const ovPort = document.getElementById('ov-port');
+      const ovIp = document.getElementById('ov-ip');
+      const ovShort = document.getElementById('ov-short');
+
+      const urlAccordionToggle = document.getElementById('url-accordion-toggle');
+      const urlAccordionContent = document.getElementById('url-accordion-content');
+      const urlChevron = urlAccordionToggle ? urlAccordionToggle.querySelector('.chevron-icon') : null;
 
       /**
        * Title Map matching navigation targets
@@ -1625,7 +1848,6 @@
 
       /* --- STEP 3: MESSAGE SCANNER ENGINE --- */
 
-      // Fictional Demo Examples
       const demoExamples = [
         "Your account will be suspended today. Share your OTP immediately to avoid blocking.",
         "Congratulations! You have won a free gift. Pay a processing fee to claim your reward.",
@@ -1634,16 +1856,13 @@
       ];
       let currentDemoIndex = 0;
 
-      // Character Counter & Button Enable State
       if (messageInput) {
         messageInput.addEventListener('input', () => {
           const text = messageInput.value;
           const len = text.length;
           charCounter.textContent = `${len} / 5000 characters`;
 
-          if (inputError) {
-            inputError.style.display = 'none';
-          }
+          if (inputError) inputError.style.display = 'none';
 
           if (len > 0 && text.trim().length > 0) {
             analyzeBtn.removeAttribute('disabled');
@@ -1653,7 +1872,6 @@
         });
       }
 
-      // Clear Button
       if (clearBtn) {
         clearBtn.addEventListener('click', () => {
           messageInput.value = '';
@@ -1664,7 +1882,6 @@
         });
       }
 
-      // Try Demo Example Button
       if (demoBtn) {
         demoBtn.addEventListener('click', () => {
           const selectedExample = demoExamples[currentDemoIndex];
@@ -1672,13 +1889,10 @@
           charCounter.textContent = `${selectedExample.length} / 5000 characters`;
           analyzeBtn.removeAttribute('disabled');
           if (inputError) inputError.style.display = 'none';
-
-          // Cycle to next demo example
           currentDemoIndex = (currentDemoIndex + 1) % demoExamples.length;
         });
       }
 
-      // Rule-Based Heuristic Detection Rules
       const scanRules = [
         {
           id: 'urgency',
@@ -1724,11 +1938,9 @@
         }
       ];
 
-      // Analyze Message Execution
       if (analyzeBtn) {
         analyzeBtn.addEventListener('click', () => {
           const text = messageInput.value.trim();
-
           if (!text) {
             if (inputError) {
               inputError.textContent = 'Please enter a message to analyze.';
@@ -1737,15 +1949,6 @@
             return;
           }
 
-          if (text.length > 5000) {
-            if (inputError) {
-              inputError.textContent = 'Message exceeds the 5,000 characters limit.';
-              inputError.style.display = 'block';
-            }
-            return;
-          }
-
-          // Execute heuristic scan
           let totalScore = 0;
           const matchedSignals = [];
           let hasOtpMatch = false;
@@ -1762,112 +1965,65 @@
                 desc: rule.desc,
                 matchText: match[0]
               });
-
               if (rule.id === 'otp') hasOtpMatch = true;
               if (rule.id === 'links') hasLinkMatch = true;
               if (rule.id === 'financial' || rule.id === 'rewards' || rule.id === 'urgency') hasFinancialMatch = true;
             }
           });
 
-          // Cap score at 100
           const finalScore = Math.min(totalScore, 100);
-
-          // Determine Risk Category
-          let categoryLabel = '';
-          let categoryTitle = '';
-          let badgeClass = '';
-          let barColor = '';
+          let categoryLabel = '', categoryTitle = '', badgeClass = '', barColor = '';
 
           if (finalScore <= 29) {
-            categoryLabel = 'Low Risk';
-            categoryTitle = 'Low number of warning signs';
-            badgeClass = 'badge-low';
-            barColor = '#10B981';
+            categoryLabel = 'Low Risk'; categoryTitle = 'Low number of warning signs'; badgeClass = 'badge-low'; barColor = '#10B981';
           } else if (finalScore <= 59) {
-            categoryLabel = 'Moderate Risk';
-            categoryTitle = 'Some warning signs detected';
-            badgeClass = 'badge-moderate';
-            barColor = '#F59E0B';
+            categoryLabel = 'Moderate Risk'; categoryTitle = 'Some warning signs detected'; badgeClass = 'badge-moderate'; barColor = '#F59E0B';
           } else {
-            categoryLabel = 'High Risk';
-            categoryTitle = 'Multiple warning signs detected';
-            badgeClass = 'badge-high';
-            barColor = '#EF4444';
+            categoryLabel = 'High Risk'; categoryTitle = 'Multiple warning signs detected'; badgeClass = 'badge-high'; barColor = '#EF4444';
           }
 
-          // Populate UI Results
-          if (riskCategoryBadge) {
-            riskCategoryBadge.className = `badge ${badgeClass}`;
-            riskCategoryBadge.textContent = categoryLabel;
-          }
-
+          if (riskCategoryBadge) { riskCategoryBadge.className = `badge ${badgeClass}`; riskCategoryBadge.textContent = categoryLabel; }
           if (riskScoreVal) riskScoreVal.textContent = finalScore;
           if (riskCategoryTitle) riskCategoryTitle.textContent = categoryTitle;
-
-          if (scoreBarFill) {
-            scoreBarFill.style.width = `${finalScore}%`;
-            scoreBarFill.style.backgroundColor = barColor;
-          }
-
+          if (scoreBarFill) { scoreBarFill.style.width = `${finalScore}%`; scoreBarFill.style.backgroundColor = barColor; }
           if (signalCount) signalCount.textContent = matchedSignals.length;
 
-          // Render Detected Signals
           if (detectedSignalsList) {
             detectedSignalsList.innerHTML = '';
             if (matchedSignals.length === 0) {
               detectedSignalsList.innerHTML = `<div class="empty-signals">No common scam warning signs detected by rule-based heuristic patterns. Always remain cautious.</div>`;
             } else {
               matchedSignals.forEach(signal => {
-                const signalCard = document.createElement('div');
-                signalCard.className = 'signal-card';
-                signalCard.innerHTML = `
-                  <div class="signal-top">
-                    <span class="signal-category">${signal.name}</span>
-                    <span class="signal-weight">+${signal.weight} pts</span>
-                  </div>
+                const card = document.createElement('div');
+                card.className = 'signal-card';
+                card.innerHTML = `
+                  <div class="signal-top"><span class="signal-category">${signal.name}</span><span class="signal-weight">+${signal.weight} pts</span></div>
                   <p class="signal-desc">${signal.desc}</p>
                   <div><span class="signal-match">Matched: "${signal.matchText}"</span></div>
                 `;
-                detectedSignalsList.appendChild(signalCard);
+                detectedSignalsList.appendChild(card);
               });
             }
           }
 
-          // Render Recommendations
           if (recommendationsList) {
             recommendationsList.innerHTML = '';
-            const recommendations = [
+            const recs = [
               { num: 1, text: "Never share your OTP, banking PIN, passwords, or confidential credentials with anyone." },
               { num: 2, text: "Verify account issues or security alerts through the official app or independently obtained customer care numbers." }
             ];
+            if (hasOtpMatch) recs.push({ num: recs.length + 1, text: "Authentication tokens and passwords should never be entered on unofficial sites or shared over messages." });
+            if (hasLinkMatch) recs.push({ num: recs.length + 1, text: "Avoid clicking unverified links or shortened URLs from unknown senders." });
+            if (hasFinancialMatch) recs.push({ num: recs.length + 1, text: "Never pay advance processing fees or transfer money to claim unexpected prizes." });
+            recs.push({ num: recs.length + 1, text: "If money has already been lost to a suspected cyber fraud in India, call 1930 promptly and report through the official National Cyber Crime Reporting Portal (cybercrime.gov.in)." });
 
-            if (hasOtpMatch) {
-              recommendations.push({ num: recommendations.length + 1, text: "Authentication tokens and passwords should never be entered on unofficial sites or shared over messages." });
-            }
-            if (hasLinkMatch) {
-              recommendations.push({ num: recommendations.length + 1, text: "Avoid clicking unverified links or shortened URLs from unknown senders." });
-            }
-            if (hasFinancialMatch) {
-              recommendations.push({ num: recommendations.length + 1, text: "Never pay advance processing fees or transfer money to claim unexpected prizes." });
-            }
-
-            // Always append Indian Cyber Crime Helpline reference
-            recommendations.push({ 
-              num: recommendations.length + 1, 
-              text: "If money has already been lost to a suspected cyber fraud in India, call 1930 promptly and report through the official National Cyber Crime Reporting Portal (cybercrime.gov.in)." 
-            });
-
-            recommendations.forEach(rec => {
+            recs.forEach(rec => {
               const li = document.createElement('li');
-              li.innerHTML = `
-                <div class="rec-bullet">${rec.num}</div>
-                <span>${rec.text}</span>
-              `;
+              li.innerHTML = `<div class="rec-bullet">${rec.num}</div><span>${rec.text}</span>`;
               recommendationsList.appendChild(li);
             });
           }
 
-          // Show Results Panel
           if (scannerResults) {
             scannerResults.style.display = 'block';
             scannerResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1875,14 +2031,274 @@
         });
       }
 
-      // Accordion Toggle for Scoring Explanation
       if (accordionToggle) {
         accordionToggle.addEventListener('click', () => {
           const isHidden = accordionContent.style.display === 'none';
           accordionContent.style.display = isHidden ? 'flex' : 'none';
-          if (chevronIcon) {
-            chevronIcon.classList.toggle('rotate', isHidden);
+          if (chevronIcon) chevronIcon.classList.toggle('rotate', isHidden);
+        });
+      }
+
+
+      /* --- STEP 4: PHISHING URL ANALYZER ENGINE --- */
+
+      const demoUrls = [
+        "https://example.com",
+        "http://192.0.2.1/login/verify",
+        "https://secure-login.example.invalid/account/verify",
+        "http://bit.ly/free-cashback-reward",
+        "https://login.secure-bank.update.example.com:8443/auth?user@service"
+      ];
+      let currentUrlDemoIdx = 0;
+
+      const shortenedDomains = new Set([
+        'bit.ly', 'tinyurl.com', 't.co', 'goo.gl', 'ow.ly', 'buff.ly', 'is.gd', 'adf.ly', 'bit.do', 'cli.gs', 'rb.gy', 'shorte.st'
+      ]);
+
+      if (urlClearBtn) {
+        urlClearBtn.addEventListener('click', () => {
+          urlInput.value = '';
+          if (urlErrorMsg) urlErrorMsg.style.display = 'none';
+          if (urlResults) urlResults.style.display = 'none';
+        });
+      }
+
+      if (urlDemoBtn) {
+        urlDemoBtn.addEventListener('click', () => {
+          const sample = demoUrls[currentUrlDemoIdx];
+          urlInput.value = sample;
+          if (urlErrorMsg) urlErrorMsg.style.display = 'none';
+          currentUrlDemoIdx = (currentUrlDemoIdx + 1) % demoUrls.length;
+        });
+      }
+
+      if (urlAnalyzeBtn) {
+        urlAnalyzeBtn.addEventListener('click', () => {
+          const rawUrl = urlInput.value.trim();
+          if (!rawUrl) {
+            if (urlErrorMsg) {
+              urlErrorMsg.textContent = 'Please enter a URL to analyze.';
+              urlErrorMsg.style.display = 'block';
+            }
+            return;
           }
+
+          // Check unsupported protocols
+          const lower = rawUrl.toLowerCase();
+          if (lower.startsWith('javascript:') || lower.startsWith('file:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) {
+            if (urlErrorMsg) {
+              urlErrorMsg.textContent = 'Unsupported or unsafe protocol rejected (e.g., javascript:, file:, data:).';
+              urlErrorMsg.style.display = 'block';
+            }
+            if (urlResults) urlResults.style.display = 'none';
+            return;
+          }
+
+          // Parse URL using standard URL constructor
+          let parsedUrl;
+          try {
+            parsedUrl = new URL(rawUrl);
+          } catch (err) {
+            if (urlErrorMsg) {
+              urlErrorMsg.textContent = 'Invalid URL syntax. Ensure it includes http:// or https://.';
+              urlErrorMsg.style.display = 'block';
+            }
+            if (urlResults) urlResults.style.display = 'none';
+            return;
+          }
+
+          if (urlErrorMsg) urlErrorMsg.style.display = 'none';
+
+          // Extract components
+          const protocol = parsedUrl.protocol; // e.g. "https:"
+          const hostname = parsedUrl.hostname; // e.g. "example.com"
+          const port = parsedUrl.port; // e.g. "8443" or ""
+          const pathname = parsedUrl.pathname;
+          const search = parsedUrl.search;
+          const fullPath = pathname + search;
+
+          const isHttps = protocol === 'https:';
+          const isHttp = protocol === 'http:';
+
+          // IP Address check (IPv4)
+          const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+          const isIpAddress = ipv4Regex.test(hostname);
+
+          // Shortened link check
+          const isShortened = shortenedDomains.has(hostname.toLowerCase());
+
+          // User info check (@ in username/password or raw url before hostname)
+          const hasUserInfo = parsedUrl.username !== '' || parsedUrl.password !== '' || rawUrl.split('//')[1]?.includes('@');
+
+          // Non-standard port check (standard is 80 for http, 443 for https, or empty)
+          let hasNonStandardPort = false;
+          if (port !== '') {
+            const portNum = parseInt(port, 10);
+            if ((isHttp && portNum !== 80) || (isHttps && portNum !== 443) || (!isHttp && !isHttps)) {
+              hasNonStandardPort = true;
+            }
+          }
+
+          // Subdomain count / excessive subdomains (e.g., a.b.c.example.com -> > 2 dots or parts >= 4)
+          const domainParts = hostname.split('.');
+          const hasManySubdomains = domainParts.length >= 4 && !isIpAddress;
+
+          // Suspicious path keywords
+          const sensitiveKeywords = /\b(login|verify|account|secure|update|password|auth|signin|banking)\b/i;
+          const hasSensitiveKeywords = sensitiveKeywords.test(fullPath) || sensitiveKeywords.test(hostname);
+
+          // Punycode check
+          const hasPunycode = hostname.includes('xn--');
+
+          // Heuristic Scoring
+          let score = 0;
+          const matchedSignals = [];
+
+          if (isIpAddress) {
+            score += 25;
+            matchedSignals.push({
+              name: 'IP Address Hostname',
+              weight: 25,
+              desc: 'The link uses a numeric IP address instead of a standard domain name, which bypasses domain ownership transparency.'
+            });
+          }
+
+          if (hasUserInfo) {
+            score += 25;
+            matchedSignals.push({
+              name: 'Embedded User Information (@)',
+              weight: 25,
+              desc: 'Contains user credentials or an @ symbol before the hostname, often used to disguise the actual destination domain.'
+            });
+          }
+
+          if (hasSensitiveKeywords) {
+            score += 20;
+            matchedSignals.push({
+              name: 'Sensitive Keywords in Path/Domain',
+              weight: 20,
+              desc: 'Includes security-sensitive terms like login, verify, account, or secure in unusual contexts.'
+            });
+          }
+
+          if (hasManySubdomains) {
+            score += 20;
+            matchedSignals.push({
+              name: 'Excessive Subdomains',
+              weight: 20,
+              desc: 'Contains multiple nested subdomains which can be used to deceptively mimic trusted organizational services.'
+            });
+          }
+
+          if (hasNonStandardPort) {
+            score += 20;
+            matchedSignals.push({
+              name: 'Non-Standard Network Port',
+              weight: 20,
+              desc: 'Utilizes an unexpected network port (e.g., 8080, 8443) outside standard web browsing traffic.'
+            });
+          }
+
+          if (isShortened) {
+            score += 15;
+            matchedSignals.push({
+              name: 'URL Shortener Service',
+              weight: 15,
+              desc: 'Uses a link-shortening service that hides the final destination URL until opened.'
+            });
+          }
+
+          if (isHttp) {
+            score += 15;
+            matchedSignals.push({
+              name: 'Unencrypted HTTP Protocol',
+              weight: 15,
+              desc: 'Uses unencrypted HTTP instead of secure HTTPS, leaving data vulnerable to interception.'
+            });
+          }
+
+          if (hasPunycode) {
+            score += 15;
+            matchedSignals.push({
+              name: 'Punycode / Internationalized Domain',
+              weight: 15,
+              desc: 'Contains an "xn--" punycode sequence which can potentially be used in homograph spoofing attacks.'
+            });
+          }
+
+          const finalScore = Math.min(score, 100);
+
+          // Risk Category
+          let badgeText = '', badgeClass = '', riskTitle = '', barColor = '';
+          if (finalScore <= 29) {
+            badgeText = 'Few Warning Signs'; badgeClass = 'badge-low'; riskTitle = 'Few warning signs detected'; barColor = '#10B981';
+          } else if (finalScore <= 59) {
+            badgeText = 'Some Warning Signs'; badgeClass = 'badge-moderate'; riskTitle = 'Some warning signs detected'; barColor = '#F59E0B';
+          } else {
+            badgeText = 'Multiple Warning Signs'; badgeClass = 'badge-high'; riskTitle = 'Multiple warning signs detected'; barColor = '#EF4444';
+          }
+
+          // Populate Overview Grid (using safe textContent)
+          ovHostname.textContent = hostname;
+          ovProtocol.textContent = protocol;
+          ovHttps.textContent = isHttps ? 'Yes (Secure)' : 'No (Unencrypted)';
+          ovPort.textContent = hasNonStandardPort ? `Non-standard (${port})` : 'Standard / Default';
+          ovIp.textContent = isIpAddress ? 'Yes (IP Hostname)' : 'No (Domain Name)';
+          ovShort.textContent = isShortened ? 'Yes (Shortener)' : 'No';
+
+          // Populate Score & Badge
+          if (urlRiskBadge) { urlRiskBadge.className = `badge ${badgeClass}`; urlRiskBadge.textContent = badgeText; }
+          if (urlScoreVal) urlScoreVal.textContent = finalScore;
+          if (urlRiskTitle) urlRiskTitle.textContent = riskTitle;
+          if (urlScoreBar) { urlScoreBar.style.width = `${finalScore}%`; urlScoreBar.style.backgroundColor = barColor; }
+          if (urlSignalCount) urlSignalCount.textContent = matchedSignals.length;
+
+          // Render Detected Signals
+          if (urlSignalsList) {
+            urlSignalsList.innerHTML = '';
+            if (matchedSignals.length === 0) {
+              urlSignalsList.innerHTML = `<div class="empty-signals">No obvious warning signs were detected by these rules. This does not prove the website is safe.</div>`;
+            } else {
+              matchedSignals.forEach(sig => {
+                const div = document.createElement('div');
+                div.className = 'signal-card';
+                div.innerHTML = `
+                  <div class="signal-top"><span class="signal-category">${sig.name}</span><span class="signal-weight">+${sig.weight} pts</span></div>
+                  <p class="signal-desc">${sig.desc}</p>
+                `;
+                urlSignalsList.appendChild(div);
+              });
+            }
+          }
+
+          // Render Recommendations
+          if (urlRecommendationsList) {
+            urlRecommendationsList.innerHTML = '';
+            const recs = [
+              { num: 1, text: "Avoid entering passwords, OTPs, or banking details into unexpected or unfamiliar links." },
+              { num: 2, text: "Independently open the organization's official mobile application or bookmarked website." },
+              { num: 3, text: "Verify the destination through trusted independent channels. Do not assume HTTPS guarantees legitimacy." },
+              { num: 4, text: "If money has already been lost to a suspected cyber fraud in India, call 1930 promptly and report through the official National Cyber Crime Reporting Portal (cybercrime.gov.in)." }
+            ];
+            recs.forEach(rec => {
+              const li = document.createElement('li');
+              li.innerHTML = `<div class="rec-bullet">${rec.num}</div><span>${rec.text}</span>`;
+              urlRecommendationsList.appendChild(li);
+            });
+          }
+
+          if (urlResults) {
+            urlResults.style.display = 'block';
+            urlResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+      }
+
+      if (urlAccordionToggle) {
+        urlAccordionToggle.addEventListener('click', () => {
+          const isHidden = urlAccordionContent.style.display === 'none';
+          urlAccordionContent.style.display = isHidden ? 'flex' : 'none';
+          if (urlChevron) urlChevron.classList.toggle('rotate', isHidden);
         });
       }
 
