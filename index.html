@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScamShield AI - Think Before You Click</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#070A13',
+                            900: '#0B1021',
+                            800: '#0F172A',
+                            700: '#1E293B',
+                            600: '#334155',
+                        },
+                        cyan: {
+                            glow: '#06B6D4',
+                            bright: '#22D3EE',
+                        },
+                        violet: {
+                            glow: '#8B5CF6',
+                            bright: '#A855F7',
+                        }
+                    },
+                    boxShadow: {
+                        'cyan-glow': '0 0 15px -3px rgba(34, 211, 238, 0.3)',
+                        'violet-glow': '0 0 15px -3px rgba(139, 92, 246, 0.3)',
+                        'card-glow': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #070A13;
+            color: #E2E8F0;
+        }
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B1021;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06B6D4;
+        }
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        .glass-panel-hover:hover {
+            border-color: rgba(34, 211, 238, 0.3);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+        }
+        /* Pulse Animation */
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-subtle-pulse {
+            animation: subtle-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden bg-navy-950 text-slate-200 select-none">
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/70 z-40 hidden md:hidden transition-opacity duration-300"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-64 bg-navy-900 border-r border-slate-800 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl">
+        <div>
+            <!-- Header & Branding -->
+            <div class="p-5 border-b border-slate-800/80 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-600/30 border border-cyan-500/40 shadow-cyan-glow">
+                        <!-- Shield Icon -->
+                        <svg class="w-6 h-6 text-cyan-bright" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-cyan-bright rounded-full animate-ping"></span>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg text-white tracking-wide flex items-center gap-1.5">
+                            ScamShield <span class="text-xs px-1.5 py-0.5 rounded bg-violet-600/30 text-violet-bright border border-violet-500/30">AI</span>
+                        </h1>
+                        <p class="text-[10px] text-slate-400 font-medium tracking-tight">Think Before You Click.</p>
+                    </div>
+                </div>
+                <!-- Mobile Close Button -->
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white p-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-140px)]">
+                <p class="px-3 py-2 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Core Navigation</p>
+                
+                <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-gradient-to-r from-cyan-500/20 to-transparent text-cyan-bright border-l-4 border-cyan-bright">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                    <span>Dashboard</span>
+                </button>
+
+                <button onclick="switchView('message-scanner')" id="nav-message-scanner" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+                    <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                    <span>Message Scanner</span>
+                </button>
+
+                <button onclick="switchView('url-analyzer')" id="nav-url-analyzer" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+                    <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                    <span>URL Analyzer</span>
+                </button>
+
+                <button onclick="switchView('password-checker')" id="nav-password-checker" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+                    <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    <span>Password Checker</span>
+                </button>
+
+                <button onclick="switchView('safety-assistant')" id="nav-safety-assistant" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+                    <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <span>Safety Assistant</span>
+                </button>
+
+                <button onclick="switchView('emergency-help')" id="nav-emergency-help" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span>Emergency Help</span>
+                </button>
+
+                <p class="px-3 pt-4 pb-2 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Resources</p>
+
+                <button onclick="switchView('demo-lab')" id="nav-demo-lab" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    <span>Demo Lab</span>
+                </button>
+
+                <button onclick="switchView('learning-hub')" id="nav-learning-hub" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+                    <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    <span>Learning Hub</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Sidebar Footer Status -->
+        <div class="p-4 border-t border-slate-800/80 bg-navy-950/60">
+            <div class="flex items-center justify-between text-xs text-slate-400">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-subtle-pulse"></span> Engine Ready
+                </span>
+                <span class="code-font text-[10px] bg-slate-800 px-1.5 py-0.5 rounded text-cyan-400">v0.1-Step1</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Layout -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+        
+        <!-- Top App Header Bar -->
+        <header class="h-16 border-b border-slate-800 bg-navy-900/80 backdrop-blur-md px-4 md:px-8 flex items-center justify-between z-10">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-300 hover:text-white p-1.5 rounded-lg bg-slate-800/80">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <span id="current-view-title" class="text-lg font-semibold text-white">Dashboard</span>
+                    <span id="current-view-badge" class="hidden sm:inline-block text-[11px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-bright border border-cyan-500/20 font-medium">Overview</span>
+                </div>
+            </div>
+
+            <!-- Header Quick Actions & Badges -->
+            <div class="flex items-center space-x-3">
+                <div class="hidden sm:flex items-center space-x-2 bg-navy-950 px-3 py-1.5 rounded-full border border-slate-800 text-xs">
+                    <span class="text-slate-400">Hackathon Mode:</span>
+                    <span class="text-violet-bright font-medium">College Demo</span>
+                </div>
+                <div class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>System Active</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dynamic View Container -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950">
+            
+            <!-- SECTION 1: DASHBOARD VIEW -->
+            <div id="view-dashboard" class="space-y-6 max-w-7xl mx-auto">
+                
+                <!-- Welcome Banner -->
+                <div class="relative overflow-hidden rounded-2xl glass-panel p-6 md:p-8 border border-slate-700/50 shadow-card-glow">
+                    <div class="absolute -right-10 -top-10 w-60 h-60 bg-gradient-to-br from-cyan-500/10 to-violet-600/20 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="relative z-10 space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright text-xs font-medium">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            Hackathon Initial Project Step 1
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                            Welcome to <span class="bg-gradient-to-r from-cyan-bright to-violet-bright bg-clip-text text-transparent">ScamShield AI</span>
+                        </h2>
+                        <p class="text-slate-300 max-w-2xl text-sm md:text-base leading-relaxed">
+                            Your intelligent defense against social engineering, malicious links, and phishing scams. Built to empower users to analyze threats effortlessly.
+                        </p>
+                        <div class="pt-2 flex flex-wrap gap-3">
+                            <button onclick="switchView('message-scanner')" class="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium text-sm shadow-cyan-glow transition-all flex items-center gap-2">
+                                <span>Try Message Scanner Preview</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </button>
+                            <button onclick="switchView('demo-lab')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium text-sm transition-all">
+                                Open Demo Lab
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats Summary Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Stat 1 -->
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800 flex items-center space-x-4">
+                        <div class="p-3 rounded-lg bg-cyan-500/10 text-cyan-bright border border-cyan-500/20">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">Protection Status</p>
+                            <p class="text-lg font-bold text-white flex items-center gap-2">
+                                Active <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-normal">Real-time</span>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Stat 2 -->
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800 flex items-center space-x-4">
+                        <div class="p-3 rounded-lg bg-violet-500/10 text-violet-bright border border-violet-500/20">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">Scams Intercepted</p>
+                            <p class="text-lg font-bold text-white">0 <span class="text-xs text-slate-500 font-normal">(Demo Mode)</span></p>
+                        </div>
+                    </div>
+                    <!-- Stat 3 -->
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800 flex items-center space-x-4">
+                        <div class="p-3 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">Threat Level</p>
+                            <p class="text-lg font-bold text-emerald-400">Low / Secure</p>
+                        </div>
+                    </div>
+                    <!-- Stat 4 -->
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800 flex items-center space-x-4">
+                        <div class="p-3 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">Step 1 Stage</p>
+                            <p class="text-lg font-bold text-white">UI Foundation</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Planned Features Section Title -->
+                <div class="pt-4 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Planned Application Features</h3>
+                        <p class="text-xs text-slate-400">Features scheduled for implementation in upcoming hackathon steps.</p>
+                    </div>
+                    <span class="text-xs code-font text-cyan-bright bg-cyan-500/10 border border-cyan-500/30 px-3 py-1 rounded-full">Step 1 Architecture</span>
+                </div>
+
+                <!-- Feature Cards Grid (7 Planned Modules) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Card 1: Message Scanner -->
+                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                                </div>
+                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-cyan-400 border border-slate-700">Coming in Step 2+</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white group-hover:text-cyan-bright transition-colors">Message Scanner</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                AI-driven analysis for suspicious SMS, emails, and WhatsApp messages to detect phishing attempts and psychological manipulation.
+                            </p>
+                        </div>
+                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-500 code-font">Module 01</span>
+                            <button onclick="switchView('message-scanner')" class="text-xs text-cyan-bright hover:underline font-medium flex items-center gap-1">
+                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: URL Analyzer -->
+                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                </div>
+                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-cyan-400 border border-slate-700">Coming in Step 2+</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white group-hover:text-cyan-bright transition-colors">URL Analyzer</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Inspect link structures, typosquatting domains, fake SSL certificates, and suspicious redirects before you click.
+                            </p>
+                        </div>
+                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-500 code-font">Module 02</span>
+                            <button onclick="switchView('url-analyzer')" class="text-xs text-cyan-bright hover:underline font-medium flex items-center gap-1">
+                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Password Checker -->
+                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                </div>
+                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-violet-400 border border-slate-700">Coming in Step 2+</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white group-hover:text-violet-bright transition-colors">Password Checker</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Test credential strength, calculate crack entropy, and check for common breach patterns offline securely.
+                            </p>
+                        </div>
+                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-500 code-font">Module 03</span>
+                            <button onclick="switchView('password-checker')" class="text-xs text-violet-bright hover:underline font-medium flex items-center gap-1">
+                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Safety Assistant -->
+                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                </div>
+                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-violet-400 border border-slate-700">Coming in Step 2+</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white group-hover:text-violet-bright transition-colors">Safety Assistant</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                An interactive AI safety guide providing immediate rules of thumb for online transactions and personal privacy.
+                            </p>
+                        </div>
+                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-500 code-font">Module 04</span>
+                            <button onclick="switchView('safety-assistant')" class="text-xs text-violet-bright hover:underline font-medium flex items-center gap-1">
+                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Emergency Help -->
+                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                </div>
+                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-red-400 border border-slate-700">Coming in Step 2+</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white group-hover:text-red-400 transition-colors">Emergency Help</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Immediate response steps if you clicked a dangerous link, leaked credentials, or lost money to a cyber scam.
+                            </p>
+                        </div>
+                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-500 code-font">Module 05</span>
+                            <button onclick="switchView('emergency-help')" class="text-xs text-red-400 hover:underline font-medium flex items-center gap-1">
+                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 6: Demo Lab -->
+                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                                </div>
+                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-cyan-400 border border-slate-700">Coming in Step 2+</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white group-hover:text-cyan-bright transition-colors">Demo Lab</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Pre-loaded scam message samples and malicious URL cases for hackathon judge presentations.
+                            </p>
+                        </div>
+                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-500 code-font">Module 06</span>
+                            <button onclick="switchView('demo-lab')" class="text-xs text-cyan-bright hover:underline font-medium flex items-center gap-1">
+                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Card 7: Learning Hub -->
+                    <div class="glass-panel glass-panel-hover p-6 rounded-xl flex flex-col justify-between transition-all group lg:col-span-1 md:col-span-2">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                                </div>
+                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-violet-400 border border-slate-700">Coming in Step 2+</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white group-hover:text-violet-bright transition-colors">Learning Hub</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Educational breakdown of real-world scam techniques including bank impersonation, lottery scams, and job offer fraud.
+                            </p>
+                        </div>
+                        <div class="pt-6 border-t border-slate-800/80 mt-4 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-500 code-font">Module 07</span>
+                            <button onclick="switchView('learning-hub')" class="text-xs text-violet-bright hover:underline font-medium flex items-center gap-1">
+                                View Module <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- PLACEHOLDER VIEWS FOR UPCOMING FEATURES -->
+
+            <!-- Section: Message Scanner -->
+            <div id="view-message-scanner" class="hidden max-w-4xl mx-auto space-y-6">
+                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
+                    <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center mx-auto shadow-cyan-glow">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                    </div>
+                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-cyan-400 text-xs font-semibold">Under Development - Coming in future steps</span>
+                    <h3 class="text-2xl font-bold text-white">Message Scanner Module</h3>
+                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
+                        This module will allow users to paste suspicious SMS messages or emails. The engine will scan for urgency triggers, dangerous links, and spoofing patterns.
+                    </p>
+                    <div class="p-4 bg-navy-950/80 rounded-xl border border-slate-800 max-w-lg mx-auto text-left space-y-2 text-xs">
+                        <div class="text-slate-300 font-semibold flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-cyan-bright"></span> Planned Capabilities for Step 2:
+                        </div>
+                        <ul class="list-disc list-inside text-slate-400 space-y-1 pl-2">
+                            <li>NLP urgency and threat detection</li>
+                            <li>SMS and email text pasting interface</li>
+                            <li>Risk level calculation (Safe, Suspicious, Critical)</li>
+                        </ul>
+                    </div>
+                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section: URL Analyzer -->
+            <div id="view-url-analyzer" class="hidden max-w-4xl mx-auto space-y-6">
+                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
+                    <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center mx-auto shadow-cyan-glow">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                    </div>
+                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-cyan-400 text-xs font-semibold">Under Development - Coming in future steps</span>
+                    <h3 class="text-2xl font-bold text-white">URL Analyzer Module</h3>
+                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
+                        This module will analyze web links for typosquatting (e.g. paypa1.com), suspicious TLDs, IP-based URLs, and credential harvesting forms.
+                    </p>
+                    <div class="p-4 bg-navy-950/80 rounded-xl border border-slate-800 max-w-lg mx-auto text-left space-y-2 text-xs">
+                        <div class="text-slate-300 font-semibold flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-cyan-bright"></span> Planned Capabilities for Step 3:
+                        </div>
+                        <ul class="list-disc list-inside text-slate-400 space-y-1 pl-2">
+                            <li>Domain structure & character anomaly parsing</li>
+                            <li>HTTPS & TLD risk scoring</li>
+                            <li>Visual safety indicator breakdown</li>
+                        </ul>
+                    </div>
+                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section: Password Checker -->
+            <div id="view-password-checker" class="hidden max-w-4xl mx-auto space-y-6">
+                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
+                    <div class="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center mx-auto shadow-violet-glow">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    </div>
+                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-violet-400 text-xs font-semibold">Under Development - Coming in future steps</span>
+                    <h3 class="text-2xl font-bold text-white">Password Checker Module</h3>
+                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
+                        Evaluates password strength entirely client-side without transmitting plain-text passwords to any network server.
+                    </p>
+                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section: Safety Assistant -->
+            <div id="view-safety-assistant" class="hidden max-w-4xl mx-auto space-y-6">
+                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
+                    <div class="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center mx-auto shadow-violet-glow">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </div>
+                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-violet-400 text-xs font-semibold">Under Development - Coming in future steps</span>
+                    <h3 class="text-2xl font-bold text-white">Safety Assistant Module</h3>
+                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
+                        Interactive guidance to query security best practices, verify digital payment safety, and prevent social engineering traps.
+                    </p>
+                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section: Emergency Help -->
+            <div id="view-emergency-help" class="hidden max-w-4xl mx-auto space-y-6">
+                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
+                    <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 flex items-center justify-center mx-auto">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    </div>
+                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-red-400 text-xs font-semibold">Under Development - Coming in future steps</span>
+                    <h3 class="text-2xl font-bold text-white">Emergency Help Checklist</h3>
+                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
+                        Step-by-step triage protocol if you have already been compromised (e.g. freeze cards, change critical passwords, report to cyber cell).
+                    </p>
+                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section: Demo Lab -->
+            <div id="view-demo-lab" class="hidden max-w-4xl mx-auto space-y-6">
+                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
+                    <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-bright flex items-center justify-center mx-auto shadow-cyan-glow">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    </div>
+                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-cyan-400 text-xs font-semibold">Under Development - Coming in future steps</span>
+                    <h3 class="text-2xl font-bold text-white">Hackathon Demo Lab</h3>
+                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
+                        A dedicated sandbox loaded with preset scam datasets for fast demonstration during live hackathon judge reviews.
+                    </p>
+                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section: Learning Hub -->
+            <div id="view-learning-hub" class="hidden max-w-4xl mx-auto space-y-6">
+                <div class="glass-panel p-8 rounded-2xl border border-slate-800 text-center space-y-5">
+                    <div class="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/30 text-violet-bright flex items-center justify-center mx-auto shadow-violet-glow">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    </div>
+                    <span class="inline-block px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-violet-400 text-xs font-semibold">Under Development - Coming in future steps</span>
+                    <h3 class="text-2xl font-bold text-white">Cybersecurity Learning Hub</h3>
+                    <p class="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
+                        Interactive lessons on common fraud patterns, digital safety hygiene, and practical tips for identifying online threats.
+                    </p>
+                    <button onclick="switchView('dashboard')" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm transition-all inline-flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- JavaScript Navigation Logic -->
+    <script>
+        // List of all section view IDs
+        const viewIds = [
+            'dashboard',
+            'message-scanner',
+            'url-analyzer',
+            'password-checker',
+            'safety-assistant',
+            'emergency-help',
+            'demo-lab',
+            'learning-hub'
+        ];
+
+        // Format View Titles for Header
+        const viewTitles = {
+            'dashboard': 'Dashboard Overview',
+            'message-scanner': 'Message Scanner Module',
+            'url-analyzer': 'URL Analyzer Module',
+            'password-checker': 'Password Checker Module',
+            'safety-assistant': 'Safety Assistant Module',
+            'emergency-help': 'Emergency Help Checklist',
+            'demo-lab': 'Hackathon Demo Lab',
+            'learning-hub': 'Learning Hub'
+        };
+
+        /**
+         * Switches the active view cleanly and updates sidebar navigation styles.
+         * @param {string} targetViewId - The target section name.
+         */
+        function switchView(targetViewId) {
+            // Hide all views and remove active state from sidebar buttons
+            viewIds.forEach(id => {
+                const viewEl = document.getElementById(`view-${id}`);
+                const navEl = document.getElementById(`nav-${id}`);
+
+                if (viewEl) {
+                    viewEl.classList.add('hidden');
+                }
+
+                if (navEl) {
+                    navEl.className = "nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all";
+                }
+            });
+
+            // Reveal active view
+            const activeView = document.getElementById(`view-${targetViewId}`);
+            if (activeView) {
+                activeView.classList.remove('hidden');
+            }
+
+            // Highlight active sidebar navigation button
+            const activeNav = document.getElementById(`nav-${targetViewId}`);
+            if (activeNav) {
+                activeNav.className = "nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-gradient-to-r from-cyan-500/20 to-transparent text-cyan-bright border-l-4 border-cyan-bright font-semibold";
+            }
+
+            // Update top bar title & badge text
+            const titleEl = document.getElementById('current-view-title');
+            const badgeEl = document.getElementById('current-view-badge');
+            if (titleEl) {
+                titleEl.textContent = viewTitles[targetViewId] || 'ScamShield AI';
+            }
+            if (badgeEl) {
+                badgeEl.textContent = targetViewId === 'dashboard' ? 'Overview' : 'Preview Step';
+            }
+
+            // Auto-close mobile sidebar after selection
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.add('-translate-x-full');
+                if (backdrop) backdrop.classList.add('hidden');
+            }
+
+            // Scroll main container to top
+            const mainContainer = document.querySelector('main');
+            if (mainContainer) mainContainer.scrollTop = 0;
+        }
+
+        /**
+         * Toggles mobile drawer view for responsiveness.
+         */
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar) {
+                sidebar.classList.toggle('-translate-x-full');
+            }
+            if (backdrop) {
+                backdrop.classList.toggle('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
