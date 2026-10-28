@@ -463,7 +463,6 @@
       margin-top: 2px;
     }
 
-    /* Activity Panel Empty State */
     .empty-state {
       display: flex;
       flex-direction: column;
@@ -521,21 +520,21 @@
       line-height: 1.4;
     }
 
-    /* --- STEP 3, 4, 5: MODULE CONTAINERS --- */
-    .scanner-container, .analyzer-container, .password-container {
+    /* --- MODULE CONTAINERS --- */
+    .scanner-container, .analyzer-container, .password-container, .assistant-container {
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
     }
 
-    .scanner-header h2, .analyzer-header h2, .password-header h2 {
+    .scanner-header h2, .analyzer-header h2, .password-header h2, .assistant-header h2 {
       font-size: 1.5rem;
       font-weight: 700;
       margin: 0.35rem 0;
       color: var(--text-main);
     }
 
-    .scanner-header p, .analyzer-header p, .password-header p {
+    .scanner-header p, .analyzer-header p, .password-header p, .assistant-header p {
       color: var(--text-muted);
       font-size: 0.925rem;
     }
@@ -631,7 +630,7 @@
       color: var(--text-main);
     }
 
-    /* Password Input Wrapper & Toggle */
+    /* Password Input & Toggle */
     .password-input-wrapper {
       position: relative;
       display: flex;
@@ -678,7 +677,7 @@
       height: 20px;
     }
 
-    /* URL Analyzer Input Row */
+    /* URL & Assistant Input Row */
     .url-input-row {
       display: flex;
       gap: 0.75rem;
@@ -721,6 +720,24 @@
       font-size: 1.2rem;
       font-weight: 700;
       color: var(--text-main);
+    }
+
+    .badge-low {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: #10B981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-moderate {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: #F59E0B;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-high {
+      background-color: rgba(239, 68, 68, 0.15);
+      color: #EF4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
     .badge-very-weak {
@@ -814,7 +831,7 @@
       transition: width 0.5s ease, background-color 0.3s ease;
     }
 
-    /* Characteristics Grid */
+    /* Overview / Characteristics Grid */
     .overview-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -999,6 +1016,61 @@
       font-size: 0.775rem;
       color: var(--text-dim);
       font-style: italic;
+    }
+
+    /* --- SAFETY ASSISTANT SPECIFIC STYLES --- */
+    .guidance-content-box {
+      background-color: rgba(11, 16, 33, 0.7);
+      border: 1px solid var(--border-color);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .guidance-section-block h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      margin-bottom: 0.5rem;
+    }
+
+    .guidance-section-block p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .fictional-quote {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      background-color: rgba(15, 23, 42, 0.6);
+      border-left: 3px solid var(--accent-violet);
+      padding: 0.85rem 1rem;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    .emergency-box {
+      background-color: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .emergency-box h4 {
+      color: #EF4444;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .emergency-box p {
+      font-size: 0.875rem;
+      color: var(--text-main);
+      margin-bottom: 0.75rem;
     }
 
     /* --- PLACEHOLDER SECTIONS --- */
@@ -1200,7 +1272,7 @@
       <div class="sidebar-footer">
         <div class="status-indicator">
           <span class="pulse-dot"></span>
-          <span>Engine Active (Step 5)</span>
+          <span>Engine Active (Step 6)</span>
         </div>
       </div>
     </aside>
@@ -1234,14 +1306,14 @@
             <div class="hero-content">
               <span class="badge badge-cyan">Cybersecurity Hub</span>
               <h2>Your Digital Safety Dashboard</h2>
-              <p>Check suspicious messages, inspect links, and learn how to stay safe online.</p>
+              <p>Check suspicious messages, inspect links, evaluate passwords, and explore cyber safety guidance.</p>
               <div class="hero-actions">
-                <button type="button" class="btn btn-primary nav-trigger" data-target="message-scanner-section">
+                <button type="button" class="btn btn-primary nav-trigger" data-target="safety-assistant-section">
                   <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     <path d="M9 12l2 2 4-4"/>
                   </svg>
-                  <span>Start Security Check</span>
+                  <span>Explore Safety Assistant</span>
                 </button>
               </div>
             </div>
@@ -1282,7 +1354,7 @@
                 </svg>
               </div>
               <h4>Password Checker</h4>
-              <p>Learn about password strength and security.</p>
+              <p>Evaluate password strength and learn best practices.</p>
               <button type="button" class="btn btn-secondary">Check Strength</button>
             </div>
 
@@ -1293,9 +1365,9 @@
                   <path d="M9 12l2 2 4-4"/>
                 </svg>
               </div>
-              <h4>Cyber Safety</h4>
-              <p>Explore practical tips to stay safer online.</p>
-              <button type="button" class="btn btn-secondary">Learn More</button>
+              <h4>Safety Assistant</h4>
+              <p>Get practical guidance on online threats and digital safety.</p>
+              <button type="button" class="btn btn-secondary">Open Assistant</button>
             </div>
 
           </div>
@@ -1364,7 +1436,7 @@
 
         </section>
 
-        <!-- 2. MESSAGE SCANNER SECTION (Step 3 Implemented) -->
+        <!-- 2. MESSAGE SCANNER SECTION (Step 3) -->
         <section id="message-scanner-section" class="view-section">
           <div class="card scanner-container">
             <div class="scanner-header">
@@ -1373,7 +1445,6 @@
               <p>Check a suspicious message for common warning signs before responding.</p>
             </div>
 
-            <!-- Input Form Area -->
             <div class="scanner-form-group">
               <label for="message-input" class="form-label">Suspicious Message Text</label>
               <div class="textarea-wrapper">
@@ -1391,7 +1462,6 @@
               </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="scanner-actions">
               <button type="button" id="analyze-btn" class="btn btn-primary" disabled>
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1415,7 +1485,6 @@
               </button>
             </div>
 
-            <!-- Privacy Notice Banner -->
             <div class="scanner-privacy-banner">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -1423,7 +1492,6 @@
               <span><strong>Privacy Notice:</strong> Do not paste real OTPs, passwords, banking details, or other sensitive information into this demo. Processed locally in your browser.</span>
             </div>
 
-            <!-- Results Panel (Hidden by default) -->
             <div id="scanner-results" class="scanner-results" style="display: none;">
               <div class="results-divider"></div>
               
@@ -1432,7 +1500,6 @@
                 <span id="risk-category-badge" class="badge">Low Risk</span>
               </div>
 
-              <!-- Score Card -->
               <div class="score-card card">
                 <div class="score-left">
                   <span class="score-number" id="risk-score-val">0</span>
@@ -1447,23 +1514,16 @@
                 </div>
               </div>
 
-              <!-- Detected Signals List -->
               <div class="results-section-block">
                 <h4>Detected Warning Signs (<span id="signal-count">0</span>)</h4>
-                <div id="detected-signals-list" class="signals-list">
-                  <!-- Populated via JS -->
-                </div>
+                <div id="detected-signals-list" class="signals-list"></div>
               </div>
 
-              <!-- Recommended Next Steps -->
               <div class="results-section-block recommendations-block">
                 <h4>Recommended Next Steps</h4>
-                <ul id="recommendations-list" class="recommendations-list">
-                  <!-- Populated via JS -->
-                </ul>
+                <ul id="recommendations-list" class="recommendations-list"></ul>
               </div>
 
-              <!-- How This Score Works (Accordion) -->
               <div class="accordion-container">
                 <button type="button" id="accordion-toggle" class="accordion-toggle">
                   <span>How this score works (Rule-based scoring breakdown)</span>
@@ -1474,14 +1534,14 @@
                 <div id="accordion-content" class="accordion-content" style="display: none;">
                   <p>ScamShield AI uses a deterministic heuristic matching engine running entirely in your browser. It scans text against weighted cyber threat patterns:</p>
                   <ul>
-                    <li><strong>Urgency & Threats (Weight 25):</strong> High-pressure words designed to induce panic (e.g., account blocked, within 24 hours).</li>
+                    <li><strong>Urgency & Threats (Weight 25):</strong> High-pressure words designed to induce panic.</li>
                     <li><strong>OTP & Credential Requests (Weight 30):</strong> Attempts to harvest secret authentication tokens, PINs, or passwords.</li>
                     <li><strong>Suspicious Rewards & Offers (Weight 20):</strong> Unsolicited lotteries, free prizes, or cashback hooks.</li>
-                    <li><strong>Financial Pressure (Weight 25):</strong> Demands for immediate payment, processing fees, or money transfers.</li>
-                    <li><strong>Suspicious Links (Weight 15):</strong> Unverified URLs or shortened links embedded in messages.</li>
-                    <li><strong>Impersonation Signals (Weight 20):</strong> Authority impersonation (bank support, KYC update) combined with sensitive requests.</li>
+                    <li><strong>Financial Pressure (Weight 25):</strong> Demands for immediate payment or fees.</li>
+                    <li><strong>Suspicious Links (Weight 15):</strong> Unverified URLs or shortened links.</li>
+                    <li><strong>Impersonation Signals (Weight 20):</strong> Authority impersonation combined with sensitive requests.</li>
                   </ul>
-                  <p class="accordion-note">Scores are capped at 100. Repeated instances of the same category do not inflate the score. Low scores do not guarantee safety, and high scores do not independently prove criminal intent.</p>
+                  <p class="accordion-note">Scores are capped at 100. Low scores do not guarantee safety.</p>
                 </div>
               </div>
 
@@ -1490,7 +1550,7 @@
           </div>
         </section>
 
-        <!-- 3. URL ANALYZER SECTION (Step 4 Implemented) -->
+        <!-- 3. URL ANALYZER SECTION (Step 4) -->
         <section id="url-analyzer-section" class="view-section">
           <div class="card analyzer-container">
             <div class="analyzer-header">
@@ -1499,7 +1559,6 @@
               <p>Inspect a suspicious link for common warning signs before deciding what to do.</p>
             </div>
 
-            <!-- URL Input Form -->
             <div class="scanner-form-group">
               <label for="url-input" class="form-label">Suspicious URL Link</label>
               <div class="url-input-row">
@@ -1523,7 +1582,6 @@
               </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="scanner-actions">
               <button type="button" id="url-clear-btn" class="btn btn-secondary">
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1540,15 +1598,13 @@
               </button>
             </div>
 
-            <!-- Privacy Notice Banner -->
             <div class="scanner-privacy-banner">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
-              <span><strong>Privacy Notice:</strong> Never open an unfamiliar link just to test it. This tool inspects the URL text without visiting the website. Processed locally in your browser.</span>
+              <span><strong>Privacy Notice:</strong> Never open an unfamiliar link just to test it. This tool inspects the URL text without visiting the website.</span>
             </div>
 
-            <!-- URL Results Panel (Hidden by default) -->
             <div id="url-results" class="scanner-results" style="display: none;">
               <div class="results-divider"></div>
               
@@ -1557,7 +1613,6 @@
                 <span id="url-risk-badge" class="badge">Few Warning Signs</span>
               </div>
 
-              <!-- Score Card -->
               <div class="score-card card">
                 <div class="score-left">
                   <span class="score-number" id="url-score-val">0</span>
@@ -1572,7 +1627,6 @@
                 </div>
               </div>
 
-              <!-- URL Overview Grid -->
               <div class="results-section-block">
                 <h4>URL Structure Overview</h4>
                 <div class="overview-grid">
@@ -1603,23 +1657,16 @@
                 </div>
               </div>
 
-              <!-- Detected Signals List -->
               <div class="results-section-block">
                 <h4>Detected Warning Signs (<span id="url-signal-count">0</span>)</h4>
-                <div id="url-signals-list" class="signals-list">
-                  <!-- Populated via JS -->
-                </div>
+                <div id="url-signals-list" class="signals-list"></div>
               </div>
 
-              <!-- Recommended Actions -->
               <div class="results-section-block recommendations-block">
                 <h4>Recommended Actions</h4>
-                <ul id="url-recommendations-list" class="recommendations-list">
-                  <!-- Populated via JS -->
-                </ul>
+                <ul id="url-recommendations-list" class="recommendations-list"></ul>
               </div>
 
-              <!-- How This Score Works (Accordion) -->
               <div class="accordion-container">
                 <button type="button" id="url-accordion-toggle" class="accordion-toggle">
                   <span>How this score works (URL heuristic breakdown)</span>
@@ -1628,18 +1675,7 @@
                   </svg>
                 </button>
                 <div id="url-accordion-content" class="accordion-content" style="display: none;">
-                  <p>ScamShield AI's URL Analyzer uses a deterministic offline heuristic inspection engine to evaluate link structures:</p>
-                  <ul>
-                    <li><strong>IP-Address Hostnames (Weight 25):</strong> Direct numeric IP links often bypass typical domain registration transparency.</li>
-                    <li><strong>Embedded User Info (Weight 25):</strong> `@` symbols in URLs can mask the actual destination domain.</li>
-                    <li><strong>Suspicious Keywords (Weight 20):</strong> Words like 'login', 'verify', 'secure', 'account' in unconventional path contexts.</li>
-                    <li><strong>Excessive Subdomains (Weight 20):</strong> Multiple nested subdomains designed to imitate trusted brands.</li>
-                    <li><strong>Non-Standard Ports (Weight 20):</strong> Ports outside standard web traffic (80/443) used in unexpected services.</li>
-                    <li><strong>Shortened Links (Weight 15):</strong> Obfuscated redirect links where the destination isn't immediately visible.</li>
-                    <li><strong>HTTP Protocol (Weight 15):</strong> Unencrypted connections lacking TLS security.</li>
-                    <li><strong>Punycode / Internationalized Domain (Weight 15):</strong> 'xn--' prefixes that can facilitate homograph spoofing.</li>
-                  </ul>
-                  <p class="accordion-note">Scores are capped at 100. Legitimate sites may trigger some heuristic warnings, and sophisticated phishing URLs can appear clean. Always verify destinations independently.</p>
+                  <p>Evaluates link structures against deterministic heuristic rules including IP addresses, embedded user info (@), sensitive keywords, excessive subdomains, and non-standard ports.</p>
                 </div>
               </div>
 
@@ -1648,7 +1684,7 @@
           </div>
         </section>
 
-        <!-- 4. PASSWORD CHECKER SECTION (Step 5 Implemented) -->
+        <!-- 4. PASSWORD CHECKER SECTION (Step 5) -->
         <section id="password-checker-section" class="view-section">
           <div class="card password-container">
             <div class="password-header">
@@ -1657,7 +1693,6 @@
               <p>Understand the security characteristics of a password and learn how to make it stronger.</p>
             </div>
 
-            <!-- Password Input Form -->
             <div class="scanner-form-group">
               <label for="pwd-input" class="form-label">Password Input</label>
               <div class="password-input-wrapper">
@@ -1680,7 +1715,6 @@
               </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="scanner-actions">
               <button type="button" id="pwd-analyze-btn" class="btn btn-primary">
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1704,15 +1738,13 @@
               </button>
             </div>
 
-            <!-- Privacy Notice Banner -->
             <div class="scanner-privacy-banner">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
-              <span><strong>Privacy first:</strong> Your password is checked locally in this browser. It is never intentionally stored or sent to a server by this tool. For a hackathon demonstration, use a fictional test password rather than a real account password.</span>
+              <span><strong>Privacy first:</strong> Your password is checked locally in this browser. It is never intentionally stored or sent to a server.</span>
             </div>
 
-            <!-- Password Results Panel (Hidden by default) -->
             <div id="pwd-results" class="scanner-results" style="display: none;">
               <div class="results-divider"></div>
               
@@ -1721,7 +1753,6 @@
                 <span id="pwd-risk-badge" class="badge">Fair</span>
               </div>
 
-              <!-- Score Card -->
               <div class="score-card card">
                 <div class="score-left">
                   <span class="score-number" id="pwd-score-val">0</span>
@@ -1729,14 +1760,13 @@
                 </div>
                 <div class="score-right">
                   <h4 id="pwd-risk-title">Fair strength password</h4>
-                  <p class="score-disclaimer">Heuristic evaluation score — does not guarantee mathematical entropy or resistance to all attacks.</p>
+                  <p class="score-disclaimer">Heuristic evaluation score — does not guarantee mathematical entropy.</p>
                   <div class="score-bar-container">
                     <div id="pwd-score-bar" class="score-bar-fill" style="width: 0%;"></div>
                   </div>
                 </div>
               </div>
 
-              <!-- Characteristics Overview Grid -->
               <div class="results-section-block">
                 <h4>Character & Length Characteristics</h4>
                 <div class="overview-grid">
@@ -1767,23 +1797,16 @@
                 </div>
               </div>
 
-              <!-- Detected Weaknesses & Patterns -->
               <div class="results-section-block">
                 <h4>Detected Patterns & Weaknesses (<span id="pwd-signal-count">0</span>)</h4>
-                <div id="pwd-signals-list" class="signals-list">
-                  <!-- Populated via JS -->
-                </div>
+                <div id="pwd-signals-list" class="signals-list"></div>
               </div>
 
-              <!-- Recommendations -->
               <div class="results-section-block recommendations-block">
                 <h4>Improvement Recommendations</h4>
-                <ul id="pwd-recommendations-list" class="recommendations-list">
-                  <!-- Populated via JS -->
-                </ul>
+                <ul id="pwd-recommendations-list" class="recommendations-list"></ul>
               </div>
 
-              <!-- How This Score Works (Accordion) -->
               <div class="accordion-container">
                 <button type="button" id="pwd-accordion-toggle" class="accordion-toggle">
                   <span>How this score works (Password heuristic breakdown)</span>
@@ -1792,14 +1815,7 @@
                   </svg>
                 </button>
                 <div id="pwd-accordion-content" class="accordion-content" style="display: none;">
-                  <p>ScamShield AI's Password Strength Checker evaluates passwords against deterministic security principles:</p>
-                  <ul>
-                    <li><strong>Length & Passphrases:</strong> Longer inputs exponentially increase guessing complexity. Using multi-word passphrases provides strong security.</li>
-                    <li><strong>Character Variety:</strong> Mixing uppercase, lowercase, numbers, and symbols increases the keyspace.</li>
-                    <li><strong>Pattern Detection:</strong> Identifies predictable sequences (e.g., `123456`, `qwerty`), repeated characters (`aaaaaa`), and common weak phrases.</li>
-                    <li><strong>Whitespace Awareness:</strong> Checks for leading or trailing whitespace, which can cause login failures or accidental typing errors.</li>
-                  </ul>
-                  <p class="accordion-note">Scores are capped at 100. This is a local educational helper and does not replace cryptographic strength evaluation or enterprise vault checks.</p>
+                  <p>Evaluates passwords based on length, variety, common dictionary words, sequential characters, keyboard walks, and whitespace formatting.</p>
                 </div>
               </div>
 
@@ -1808,19 +1824,174 @@
           </div>
         </section>
 
-        <!-- 5. PLACEHOLDER: SAFETY ASSISTANT -->
+        <!-- 5. CYBER SAFETY ASSISTANT SECTION (Step 6 Implemented) -->
         <section id="safety-assistant-section" class="view-section">
-          <div class="card placeholder-card">
-            <div class="placeholder-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <path d="M9 12l2 2 4-4"/>
-              </svg>
+          <div class="card assistant-container">
+            <div class="assistant-header">
+              <span class="badge badge-cyan">Step 6 Module</span>
+              <h2>Cyber Safety Assistant</h2>
+              <p>Get practical guidance to recognize online threats and protect your digital identity.</p>
             </div>
-            <span class="badge badge-step">Planned Module</span>
-            <h2>Safety Assistant</h2>
-            <p class="placeholder-desc">Cyber safety guidance will be implemented in Step 6.</p>
-            <button type="button" class="btn btn-secondary back-to-dash">Return to Dashboard</button>
+
+            <!-- Privacy & Nature Notice Banner -->
+            <div class="scanner-privacy-banner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <span><strong>Notice:</strong> This educational assistant uses predefined local guidance. Do not enter passwords, OTPs, banking information, or other sensitive personal details. Not a real AI chatbot.</span>
+            </div>
+
+            <!-- Question Input Box -->
+            <div class="scanner-form-group">
+              <label for="assistant-query" class="form-label">Ask a Safety Question</label>
+              <div class="url-input-row">
+                <input 
+                  type="text" 
+                  id="assistant-query" 
+                  class="url-input" 
+                  placeholder="e.g., Someone is asking for my OTP. What should I do?"
+                  aria-label="Ask a safety question input">
+                <button type="button" id="assistant-ask-btn" class="btn btn-primary">
+                  <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <span>Get Guidance</span>
+                </button>
+              </div>
+              <div class="textarea-footer">
+                <span id="assistant-error-msg" class="input-error-msg" style="display: none;">Please enter a question or select a topic below.</span>
+                <span>Rule-based offline matching</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons (Clear) -->
+            <div class="scanner-actions">
+              <button type="button" id="assistant-clear-btn" class="btn btn-secondary">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                <span>Clear Guidance</span>
+              </button>
+            </div>
+
+            <!-- Guidance Display Panel (Hidden initially) -->
+            <div id="assistant-results-panel" class="scanner-results" style="display: none;">
+              <div class="results-divider"></div>
+              <div class="results-header-row">
+                <h3 id="guidance-topic-title">Guidance Topic</h3>
+                <span id="guidance-badge" class="badge badge-cyan">Safety Guidance</span>
+              </div>
+
+              <div class="guidance-content-box card">
+                <div class="guidance-section-block">
+                  <h4>What is the risk?</h4>
+                  <p id="guidance-risk">-</p>
+                </div>
+                <div class="guidance-section-block">
+                  <h4>Warning Signs</h4>
+                  <ul id="guidance-warnings" class="recommendations-list"></ul>
+                </div>
+                <div class="guidance-section-block">
+                  <h4>What should you do?</h4>
+                  <ul id="guidance-actions" class="recommendations-list"></ul>
+                </div>
+                <div class="guidance-section-block">
+                  <h4>What should you avoid?</h4>
+                  <ul id="guidance-avoids" class="recommendations-list"></ul>
+                </div>
+                <div class="guidance-section-block example-block">
+                  <h4>Fictional Example</h4>
+                  <blockquote id="guidance-example" class="fictional-quote">-</blockquote>
+                </div>
+
+                <!-- Emergency India Banner (Conditional) -->
+                <div id="guidance-emergency-box" class="emergency-box" style="display: none;">
+                  <h4>Emergency Guidance for Financial Fraud in India</h4>
+                  <p>If money has been lost to suspected cyber fraud, take action immediately:</p>
+                  <ul class="recommendations-list">
+                    <li><div class="rec-bullet">1</div><span>Call <strong>1930</strong> promptly (National Cyber Crime Helpline).</span></li>
+                    <li><div class="rec-bullet">2</div><span>Report through the official National Cyber Crime Reporting Portal: <a href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" style="color: var(--accent-cyan);">cybercrime.gov.in</a></span></li>
+                    <li><div class="rec-bullet">3</div><span>Contact your bank or payment provider immediately using official app details to freeze fraudulent transactions.</span></li>
+                    <li><div class="rec-bullet">4</div><span>Preserve transaction references, SMS logs, and screenshots.</span></li>
+                    <li><div class="rec-bullet">5</div><span>Never share OTPs, PINs, or remote-access codes with anyone claiming to help recover money.</span></li>
+                  </ul>
+                  <p class="score-disclaimer" style="margin-top: 0.75rem;">Note: Reporting helps authorities investigate but does not guarantee immediate recovery of funds.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="results-divider"></div>
+
+            <!-- Topic Search & Filter & Quick Topic Cards -->
+            <div class="topics-section">
+              <div class="results-header-row" style="margin-bottom: 0.75rem;">
+                <h3>Cybersecurity Topics</h3>
+                <span id="topic-count-label" class="badge badge-step">8 Topics</span>
+              </div>
+              
+              <div class="scanner-form-group" style="margin-bottom: 1.25rem;">
+                <input 
+                  type="text" 
+                  id="topic-search-input" 
+                  class="url-input" 
+                  placeholder="Filter topics by title or keyword..."
+                  aria-label="Filter topics input">
+              </div>
+
+              <div id="topic-cards-grid" class="quick-actions-grid">
+                <!-- Populated dynamically via JS -->
+              </div>
+            </div>
+
+            <div class="results-divider"></div>
+
+            <!-- Interactive Checklist: Before You Click -->
+            <div class="checklist-card card" style="background-color: rgba(11, 16, 33, 0.7);">
+              <div class="results-header-row" style="margin-bottom: 0.5rem;">
+                <h3>Interactive Checklist: Before You Click</h3>
+                <span id="checklist-counter" class="badge badge-step">0 / 5 Checked</span>
+              </div>
+              <p class="score-disclaimer" style="margin-bottom: 1rem;">Use this quick self-check before responding to a message or opening an unfamiliar link:</p>
+              
+              <ul class="checklist-items" style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li class="checklist-item">
+                  <label class="checkbox-label" style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; font-size: 0.875rem; color: var(--text-main);">
+                    <input type="checkbox" class="safety-check-box" style="margin-top: 3px; accent-color: var(--accent-cyan); width: 16px; height: 16px;">
+                    <span>Do I recognize the sender and have a trusted way to verify their identity?</span>
+                  </label>
+                </li>
+                <li class="checklist-item">
+                  <label class="checkbox-label" style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; font-size: 0.875rem; color: var(--text-main);">
+                    <input type="checkbox" class="safety-check-box" style="margin-top: 3px; accent-color: var(--accent-cyan); width: 16px; height: 16px;">
+                    <span>Was I expecting this message, notification, or delivery?</span>
+                  </label>
+                </li>
+                <li class="checklist-item">
+                  <label class="checkbox-label" style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; font-size: 0.875rem; color: var(--text-main);">
+                    <input type="checkbox" class="safety-check-box" style="margin-top: 3px; accent-color: var(--accent-cyan); width: 16px; height: 16px;">
+                    <span>Is the destination domain correct and spelled properly without hidden subdomains or typos?</span>
+                  </label>
+                </li>
+                <li class="checklist-item">
+                  <label class="checkbox-label" style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; font-size: 0.875rem; color: var(--text-main);">
+                    <input type="checkbox" class="safety-check-box" style="margin-top: 3px; accent-color: var(--accent-cyan); width: 16px; height: 16px;">
+                    <span>Is someone pressuring me to act immediately or threatening account suspension?</span>
+                  </label>
+                </li>
+                <li class="checklist-item">
+                  <label class="checkbox-label" style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; font-size: 0.875rem; color: var(--text-main);">
+                    <input type="checkbox" class="safety-check-box" style="margin-top: 3px; accent-color: var(--accent-cyan); width: 16px; height: 16px;">
+                    <span>Am I being asked for an OTP, PIN, password, or unexpected advance payment?</span>
+                  </label>
+                </li>
+              </ul>
+              <div class="score-disclaimer" style="margin-top: 1rem; font-style: italic;">
+                Educational reminder: This interactive checklist cannot prove whether a message or website is safe.
+              </div>
+            </div>
+
           </div>
         </section>
 
@@ -1836,7 +2007,7 @@
             </div>
             <span class="badge badge-step">Planned Module</span>
             <h2>Emergency Help</h2>
-            <p class="placeholder-desc">Cyber fraud emergency guidance will be implemented in Step 7.</p>
+            <p class="placeholder-desc">Dedicated cyber fraud emergency guidance will be implemented in Step 7.</p>
             <button type="button" class="btn btn-secondary back-to-dash">Return to Dashboard</button>
           </div>
         </section>
@@ -1878,13 +2049,13 @@
 
   <script>
     /**
-     * ScamShield AI — Steps 1-5 Navigation, Message Scanner, URL Analyzer & Password Checker Engine
+     * ScamShield AI — Steps 1–6 Combined Single-File Engine
      * Standard Vanilla JS (No External Libraries)
      */
 
     document.addEventListener('DOMContentLoaded', () => {
 
-      // UI Elements
+      // UI Elements & Navigation
       const navItems = document.querySelectorAll('.nav-item');
       const viewSections = document.querySelectorAll('.view-section');
       const navTriggers = document.querySelectorAll('.nav-trigger');
@@ -1972,9 +2143,29 @@
       const pwdAccordionContent = document.getElementById('pwd-accordion-content');
       const pwdChevron = pwdAccordionToggle ? pwdAccordionToggle.querySelector('.chevron-icon') : null;
 
-      /**
-       * Title Map matching navigation targets
-       */
+      // Cyber Safety Assistant Elements (Step 6)
+      const assistantQuery = document.getElementById('assistant-query');
+      const assistantAskBtn = document.getElementById('assistant-ask-btn');
+      const assistantClearBtn = document.getElementById('assistant-clear-btn');
+      const assistantErrorMsg = document.getElementById('assistant-error-msg');
+      const assistantResultsPanel = document.getElementById('assistant-results-panel');
+      const guidanceTopicTitle = document.getElementById('guidance-topic-title');
+      const guidanceBadge = document.getElementById('guidance-badge');
+      const guidanceRisk = document.getElementById('guidance-risk');
+      const guidanceWarnings = document.getElementById('guidance-warnings');
+      const guidanceActions = document.getElementById('guidance-actions');
+      const guidanceAvoids = document.getElementById('guidance-avoids');
+      const guidanceExample = document.getElementById('guidance-example');
+      const guidanceEmergencyBox = document.getElementById('guidance-emergency-box');
+
+      const topicSearchInput = document.getElementById('topic-search-input');
+      const topicCardsGrid = document.getElementById('topic-cards-grid');
+      const topicCountLabel = document.getElementById('topic-count-label');
+
+      // Checklist Elements
+      const safetyCheckboxes = document.querySelectorAll('.safety-check-box');
+      const checklistCounter = document.getElementById('checklist-counter');
+
       const sectionTitles = {
         'dashboard-section': 'Dashboard',
         'message-scanner-section': 'Message Scanner',
@@ -1986,9 +2177,6 @@
         'learning-hub-section': 'Learning Hub'
       };
 
-      /**
-       * Switch active view and update navigation states
-       */
       function navigateToSection(targetSectionId) {
         if (!targetSectionId) return;
 
@@ -2032,8 +2220,6 @@
           sidebarOverlay.setAttribute('aria-hidden', 'true');
         }
       }
-
-      /* --- NAVIGATION EVENT LISTENERS --- */
 
       navItems.forEach(item => {
         item.addEventListener('click', (e) => {
@@ -2079,7 +2265,6 @@
 
 
       /* --- STEP 3: MESSAGE SCANNER ENGINE --- */
-
       const demoExamples = [
         "Your account will be suspended today. Share your OTP immediately to avoid blocking.",
         "Congratulations! You have won a free gift. Pay a processing fee to claim your reward.",
@@ -2093,7 +2278,6 @@
           const text = messageInput.value;
           const len = text.length;
           charCounter.textContent = `${len} / 5000 characters`;
-
           if (inputError) inputError.style.display = 'none';
 
           if (len > 0 && text.trim().length > 0) {
@@ -2126,48 +2310,12 @@
       }
 
       const scanRules = [
-        {
-          id: 'urgency',
-          name: 'Urgency and Threats',
-          weight: 25,
-          regex: /\b(act\s+immediately|account\s+blocked|account\s+suspended|urgent|final\s+warning|within\s+24\s+hours|immediate\s+action|blocked\s+today|suspend)\b/i,
-          desc: 'Uses high-pressure language or panic-inducing threats to force hasty action.'
-        },
-        {
-          id: 'otp',
-          name: 'OTP, PIN, and Credential Requests',
-          weight: 30,
-          regex: /\b(share\s+your\s+otp|send\s+otp|enter\s+your\s+pin|verify\s+your\s+password|share\s+your\s+password|enter\s+otp|otp\s+code|one\s+time\s+password)\b/i,
-          desc: 'Attempts to harvest confidential authentication tokens, PINs, or passwords.'
-        },
-        {
-          id: 'rewards',
-          name: 'Suspicious Rewards and Offers',
-          weight: 20,
-          regex: /\b(you\s+won\s+a\s+prize|claim\s+your\s+reward|free\s+gift|lottery\s+winner|cashback\s+offer|congratulations\s+won|won\s+the\s+lottery)\b/i,
-          desc: 'Promises unsolicited lotteries, prizes, or free gifts to lure victims.'
-        },
-        {
-          id: 'financial',
-          name: 'Financial Pressure and Fees',
-          weight: 25,
-          regex: /\b(send\s+money\s+now|pay\s+processing\s+fee|transfer\s+money|payment\s+pending|pay\s+fee|wiring\s+money)\b/i,
-          desc: 'Demands immediate payment, advance fees, or unauthorized money transfers.'
-        },
-        {
-          id: 'links',
-          name: 'Suspicious Links',
-          weight: 15,
-          regex: /https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9][-a-zA-Z0-9]*\.(com|net|org|info|biz|xyz|co|in|online|site|top|click|link|tk)\b/i,
-          desc: 'Contains unverified web links or shortened URLs commonly used in phishing.'
-        },
-        {
-          id: 'impersonation',
-          name: 'Impersonation Signals',
-          weight: 20,
-          regex: /\b(bank\s+support|kyc\s+update|customer\s+care|fraud\s+department|official\s+bank)\b/i,
-          desc: 'Poses as authority figures or bank support to establish false trust.'
-        }
+        { id: 'urgency', name: 'Urgency and Threats', weight: 25, regex: /\b(act\s+immediately|account\s+blocked|account\s+suspended|urgent|final\s+warning|within\s+24\s+hours|immediate\s+action|blocked\s+today|suspend)\b/i, desc: 'Uses high-pressure language or panic-inducing threats to force hasty action.' },
+        { id: 'otp', name: 'OTP, PIN, and Credential Requests', weight: 30, regex: /\b(share\s+your\s+otp|send\s+otp|enter\s+your\s+pin|verify\s+your\s+password|share\s+your\s+password|enter\s+otp|otp\s+code|one\s+time\s+password)\b/i, desc: 'Attempts to harvest confidential authentication tokens, PINs, or passwords.' },
+        { id: 'rewards', name: 'Suspicious Rewards and Offers', weight: 20, regex: /\b(you\s+won\s+a\s+prize|claim\s+your\s+reward|free\s+gift|lottery\s+winner|cashback\s+offer|congratulations\s+won|won\s+the\s+lottery)\b/i, desc: 'Promises unsolicited lotteries, prizes, or free gifts to lure victims.' },
+        { id: 'financial', name: 'Financial Pressure and Fees', weight: 25, regex: /\b(send\s+money\s+now|pay\s+processing\s+fee|transfer\s+money|payment\s+pending|pay\s+fee|wiring\s+money)\b/i, desc: 'Demands immediate payment, advance fees, or unauthorized money transfers.' },
+        { id: 'links', name: 'Suspicious Links', weight: 15, regex: /https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9][-a-zA-Z0-9]*\.(com|net|org|info|biz|xyz|co|in|online|site|top|click|link|tk)\b/i, desc: 'Contains unverified web links or shortened URLs commonly used in phishing.' },
+        { id: 'impersonation', name: 'Impersonation Signals', weight: 20, regex: /\b(bank\s+support|kyc\s+update|customer\s+care|fraud\s+department|official\s+bank)\b/i, desc: 'Poses as authority figures or bank support to establish false trust.' }
       ];
 
       if (analyzeBtn) {
@@ -2191,12 +2339,7 @@
             const match = text.match(rule.regex);
             if (match) {
               totalScore += rule.weight;
-              matchedSignals.push({
-                name: rule.name,
-                weight: rule.weight,
-                desc: rule.desc,
-                matchText: match[0]
-              });
+              matchedSignals.push({ name: rule.name, weight: rule.weight, desc: rule.desc, matchText: match[0] });
               if (rule.id === 'otp') hasOtpMatch = true;
               if (rule.id === 'links') hasLinkMatch = true;
               if (rule.id === 'financial' || rule.id === 'rewards' || rule.id === 'urgency') hasFinancialMatch = true;
@@ -2273,7 +2416,6 @@
 
 
       /* --- STEP 4: PHISHING URL ANALYZER ENGINE --- */
-
       const demoUrls = [
         "https://example.com",
         "http://192.0.2.1/login/verify",
@@ -2473,7 +2615,6 @@
 
 
       /* --- STEP 5: PASSWORD STRENGTH CHECKER ENGINE --- */
-
       const demoPasswords = [
         "abc",
         "password123",
@@ -2483,7 +2624,6 @@
       ];
       let currentPwdDemoIdx = 0;
 
-      // Show/Hide Password Toggle
       if (pwdToggleBtn && pwdInput && eyeIcon) {
         pwdToggleBtn.addEventListener('click', () => {
           const isPassword = pwdInput.type === 'password';
@@ -2492,10 +2632,8 @@
           pwdToggleBtn.title = isPassword ? 'Hide password' : 'Show password';
           
           if (isPassword) {
-            // Eye off icon
             eyeIcon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`;
           } else {
-            // Eye icon
             eyeIcon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
           }
         });
@@ -2536,7 +2674,6 @@
 
           if (pwdErrorMsg) pwdErrorMsg.style.display = 'none';
 
-          // Characteristics
           const len = pwd.length;
           const hasLower = /[a-z]/.test(pwd);
           const hasUpper = /[A-Z]/.test(pwd);
@@ -2545,46 +2682,37 @@
           const hasWhitespace = /\s/.test(pwd);
           const hasLeadingOrTrailingSpace = /^\s|\s$/.test(pwd);
 
-          // Pattern Checks
-          const repeatedCharsRegex = /(.)\1{3,}/; // e.g. aaaa
+          const repeatedCharsRegex = /(.)\1{3,}/;
           const hasRepeatedChars = repeatedCharsRegex.test(pwd);
-
           const sequentialRegex = /(1234|2345|3456|4567|5678|6789|0123|abcd|bcde|cdef|defg|efgh|fghi|ghij|hijk|ijkl|jklm|klmn|lmno|mnop|nopq|opqr|pqrs|qrst|rstu|stuv|tuvw|uvwx|vwxy|wxyz)/i;
           const hasSequential = sequentialRegex.test(pwd);
-
           const keyboardWalkRegex = /(qwerty|asdfgh|zxcvbn|qazwsx|edcrfv|wsxedc)/i;
           const hasKeyboardWalk = keyboardWalkRegex.test(pwd);
-
           const isCommonWord = commonWeakWords.has(pwd.toLowerCase());
 
-          // Scoring Logic
           let score = 0;
           const matchedSignals = [];
 
-          // Length contribution (max 40 pts)
           if (len >= 16) score += 40;
           else if (len >= 12) score += 32;
           else if (len >= 8) score += 20;
           else if (len >= 6) score += 10;
           else score += 2;
 
-          // Variety contribution (max 30 pts)
           let varietyCount = 0;
           if (hasLower) varietyCount++;
           if (hasUpper) varietyCount++;
           if (hasNumber) varietyCount++;
           if (hasSymbol) varietyCount++;
-
           score += varietyCount * 7.5;
 
-          // Pattern penalties
           if (isCommonWord) {
             score -= 30;
             matchedSignals.push({ name: 'Common Password', weight: -30, desc: 'Matches known weak passwords or dictionary words.' });
           }
           if (hasRepeatedChars) {
             score -= 20;
-            matchedSignals.push({ name: 'Repeated Characters', weight: -20, desc: 'Contains long repeating sequences of the same character (e.g. aaaa).' });
+            matchedSignals.push({ name: 'Repeated Characters', weight: -20, desc: 'Contains long repeating sequences of the same character.' });
           }
           if (hasSequential) {
             score -= 20;
@@ -2596,7 +2724,7 @@
           }
           if (hasLeadingOrTrailingSpace) {
             score -= 10;
-            matchedSignals.push({ name: 'Leading or Trailing Whitespace', weight: -10, desc: 'Contains spaces at the beginning or end, risking accidental login failures.' });
+            matchedSignals.push({ name: 'Leading or Trailing Whitespace', weight: -10, desc: 'Contains spaces at the beginning or end, risking login failures.' });
           }
 
           if (matchedSignals.length === 0 && len >= 8) {
@@ -2605,7 +2733,6 @@
 
           const finalScore = Math.max(0, Math.min(Math.round(score), 100));
 
-          // Strength Categories
           let badgeText = '', badgeClass = '', riskTitle = '', barColor = '';
           if (finalScore <= 19) {
             badgeText = 'Very Weak'; badgeClass = 'badge-very-weak'; riskTitle = 'Very weak password strength'; barColor = '#EF4444';
@@ -2619,7 +2746,6 @@
             badgeText = 'Very Strong'; badgeClass = 'badge-very-strong'; riskTitle = 'Very strong password security'; barColor = '#06B6D4';
           }
 
-          // Populate Overview Grid
           chLength.textContent = `${len} characters`;
           chLower.textContent = hasLower ? 'Yes' : 'No';
           chUpper.textContent = hasUpper ? 'Yes' : 'No';
@@ -2633,7 +2759,6 @@
           if (pwdScoreBar) { pwdScoreBar.style.width = `${finalScore}%`; pwdScoreBar.style.backgroundColor = barColor; }
           if (pwdSignalCount) pwdSignalCount.textContent = matchedSignals.length;
 
-          // Render Detected Signals
           if (pwdSignalsList) {
             pwdSignalsList.innerHTML = '';
             matchedSignals.forEach(sig => {
@@ -2644,7 +2769,6 @@
             });
           }
 
-          // Render Recommendations
           if (pwdRecommendationsList) {
             pwdRecommendationsList.innerHTML = '';
             const recs = [
@@ -2675,6 +2799,389 @@
           if (pwdChevron) pwdChevron.classList.toggle('rotate', isHidden);
         });
       }
+
+
+      /* --- STEP 6: CYBER SAFETY ASSISTANT ENGINE --- */
+      const safetyTopics = [
+        {
+          id: 'otp-fraud',
+          title: 'OTP and PIN Fraud',
+          keywords: ['otp', 'pin', 'code', 'password', 'sms', 'authentication', 'share'],
+          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+          description: 'Why OTPs, banking PINs, and authentication codes must never be shared with strangers.',
+          risk: 'One-Time Passwords (OTPs) and banking PINs grant immediate, full authorization to complete financial transactions or change account credentials. Scammers use urgent calls or messages to trick victims into revealing these secret codes.',
+          warnings: [
+            'Callers claiming to be from your bank asking for an SMS OTP to "unblock" your account.',
+            'Urgent threats that your account or debit card will be disabled within minutes.',
+            'Messages asking you to enter an OTP on an unverified link or third-party page.'
+          ],
+          actions: [
+            'Hang up immediately if anyone asks for your OTP, PIN, or password over the phone.',
+            'Verify bank alerts independently by logging into your official banking app.',
+            'Report fraudulent calls or messages to your bank and telecommunications provider.'
+          ],
+          avoids: [
+            'Never share an OTP or PIN with anyone, even family or friends if they are acting on unexpected instructions.',
+            'Never read out an SMS verification code to a customer support agent.'
+          ],
+          example: '"Hello, this is your bank security desk. Your credit card has suspicious activity. Please share the 6-digit OTP you just received to cancel the transaction."'
+        },
+        {
+          id: 'upi-scams',
+          title: 'UPI and Payment Scams',
+          keywords: ['upi', 'collect', 'request', 'qr', 'scan', 'payment', 'transfer', 'money', 'cashback'],
+          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+          description: 'Understanding payment-request tricks, fake payment screenshots, and collect requests.',
+          risk: 'Scammers often send UPI "collect requests" instead of sending money, or trick you into scanning a QR code claiming it is for receiving funds. When you enter your UPI PIN, money is debited from your account.',
+          warnings: [
+            'Receiving UPI notifications asking you to approve or pay a collect request to "receive" money.',
+            'Buyers on marketplace apps sending QR codes and claiming you must scan them to get paid.',
+            'Fake payment confirmation screenshots doctored to look like real banking apps.'
+          ],
+          actions: [
+            'Remember that entering your UPI PIN always sends money; you never need a PIN to receive money.',
+            'Decline unknown UPI collect requests immediately in your payment app.',
+            'Check your official bank account balance directly to confirm if funds were credited.'
+          ],
+          avoids: [
+            'Never scan a QR code sent by an unknown buyer or seller when trying to receive a payment.',
+            'Do not approve collect requests from unfamiliar VPA handles.'
+          ],
+          example: '"I am buying your old bicycle. I have scanned your QR code and sent half the money. Now you just need to scan this QR code and enter your UPI PIN to receive it."'
+        },
+        {
+          id: 'phishing-links',
+          title: 'Phishing and Suspicious Links',
+          keywords: ['phishing', 'link', 'url', 'click', 'domain', 'website', 'fake', 'sms'],
+          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+          description: 'How to verify destinations, avoid unexpected links, and independently access official sites.',
+          risk: 'Phishing links mimic trusted organizations (banks, delivery services, utility providers) to lure you into entering login credentials, card details, or downloading malware onto your device.',
+          warnings: [
+            'Domain names with subtle typos or strange extensions (e.g., `.co` or `.xyz` instead of `.gov.in` or `.com`).',
+            'Unsolicited messages warning of disconnected electricity, expired KYC, or missed package deliveries.',
+            'Shortened URLs (`bit.ly`, `tinyurl`) hiding the actual destination website.'
+          ],
+          actions: [
+            'Use the ScamShield URL Analyzer module to inspect suspicious links.',
+            'Navigate to official websites by typing the address directly or using verified bookmarks.',
+            'Contact customer service through official app channels to verify alerts.'
+          ],
+          avoids: [
+            'Never click links in unexpected text messages claiming urgent account actions.',
+            'Do not enter credentials on a page reached via an unverified link.'
+          ],
+          example: '"Dear Customer, your electricity power supply will be disconnected tonight due to unpaid bill. Pay immediately via http://ebill-update-online.xyz to avoid disruption."'
+        },
+        {
+          id: 'fake-jobs',
+          title: 'Fake Job and Internship Offers',
+          keywords: ['job', 'internship', 'recruiter', 'fee', 'registration', 'salary', 'work from home', 'task'],
+          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+          description: 'Warning signs such as unexpected fees, guaranteed jobs, and requests for sensitive info.',
+          risk: 'Fraudsters exploit job seekers with too-good-to-be-true remote work offers, demanding advance fees for training, uniform deposits, or software registration before vanishing.',
+          warnings: [
+            'Job offers promising high daily earnings for simple tasks (like liking videos or data entry) with zero experience.',
+            'Recruiters asking for an upfront registration, security deposit, or training fee.',
+            'Communication conducted exclusively through informal messaging apps without official corporate email domains.'
+          ],
+          actions: [
+            'Research the hiring company on official corporate websites and professional networks.',
+            'Verify HR contact emails match the official domain rather than free email services.',
+            'Report suspicious job postings to employment platforms.'
+          ],
+          avoids: [
+            'Never pay money to secure a job, interview, or internship.',
+            'Do not share PAN, Aadhaar, or bank details during initial informal chat interviews.'
+          ],
+          example: '"Congratulations! You are selected for a part-time YouTube video liking job earning 5000 INR daily. Please pay a refundable registration fee of 999 INR to activate your account."'
+        },
+        {
+          id: 'social-media',
+          title: 'Social Media Account Security',
+          keywords: ['instagram', 'facebook', 'whatsapp', 'account', 'hack', 'social media', 'profile', '2fa'],
+          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>',
+          description: 'Strong unique passwords, multifactor authentication, recovery settings, and login alerts.',
+          risk: 'Compromised social media accounts allow scammers to message your friends or followers pretending to be you, asking for urgent financial help or spreading malicious links.',
+          warnings: [
+            'Receiving unexpected password reset codes or login alerts from unfamiliar devices or cities.',
+            'Friends messaging you out of the blue asking to borrow money due to an emergency.',
+            'Messages asking you to click a link to "vote for me in a contest" or view a photo.'
+          ],
+          actions: [
+            'Enable two-factor authentication (2FA) on all social media accounts using an authenticator app.',
+            'Use strong, unique passwords generated through the ScamShield Password Checker.',
+            'Review active login sessions in account security settings and log out unrecognized devices.'
+          ],
+          avoids: [
+            'Never click login links sent by friends without verifying through a separate phone call or direct message.',
+            'Do not reuse passwords across different platforms.'
+          ],
+          example: '"Hey! Can you click this link and vote for my sister in the college art contest? I need your help quickly!" (Account was taken over by a scammer).'
+        },
+        {
+          id: 'online-shopping',
+          title: 'Online Shopping Scams',
+          keywords: ['shopping', 'store', 'buy', 'order', 'discount', 'ecommerce', 'product', 'delivery'],
+          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+          description: 'Fake stores, unrealistic offers, advance-payment risks, and checking sellers.',
+          risk: 'Fraudulent online stores advertise popular electronics or branded clothing at 80% to 90% discounts via social media ads, accepting advance payments via UPI or cards and sending worthless items or nothing.',
+          warnings: [
+            'Brand-name products sold at unbelievable discounts on unfamiliar popup websites.',
+            'Websites lacking customer support phone numbers, physical addresses, or secure payment gateways.',
+            'Social media ads with comments turned off or generic reviews.'
+          ],
+          actions: [
+            'Shop on established, reputable e-commerce platforms with verified buyer protection.',
+            'Choose Cash on Delivery (COD) when buying from unfamiliar online stores where available.',
+            'Check seller ratings and independent reviews before purchasing.'
+          ],
+          avoids: [
+            'Do not prepay for expensive goods on unverified social media ads or newly created websites.',
+            'Avoid clicking flash-sale links shared via messaging apps.'
+          ],
+          example: '"Flash Sale! Latest flagship smartphone available today only for 2,999 INR (90% off). Click here to buy now with free shipping."'
+        },
+        {
+          id: 'impersonation',
+          title: 'Impersonation and Fake Customer Support',
+          keywords: ['impersonate', 'support', 'customer care', 'bank', 'delivery', 'police', 'technician', 'helpdesk', 'courier'],
+          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+          description: 'How scammers impersonate banks, delivery services, government departments, or tech support.',
+          risk: 'Scammers post fake customer care numbers online or send messages pretending to be bank officials, police officers, or courier executives to gain remote access to your device or extract money.',
+          warnings: [
+            'Callers claiming your parcel contains illegal items and transferring you to "fake police officers" on video call.',
+            'Customer support numbers found via random internet search engines rather than official app cards.',
+            'Requests to install screen-sharing apps (AnyDesk, TeamViewer) to "resolve a bank or refund issue."'
+          ],
+          actions: [
+            'Only use contact numbers printed on the back of your official debit/credit cards or inside official banking apps.',
+            'Verify the identity of anyone claiming to be a government or law enforcement official.',
+            'Disconnect immediately if asked to install remote-access software.'
+          ],
+          avoids: [
+            'Never install remote-control or screen-sharing applications upon request from strangers.',
+            'Do not share personal documents on video calls with unverified callers.'
+          ],
+          example: '"Your courier package from Mumbai has been seized by customs containing illegal drugs. Please join this Skype video call with cyber police immediately to clear your name."'
+        },
+        {
+          id: 'personal-data',
+          title: 'Personal Data and Privacy',
+          keywords: ['privacy', 'data', 'wi-fi', 'public', 'share', 'permission', 'aadhaar', 'pan', 'social media'],
+          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+          description: 'Safe sharing practices, app permissions, public Wi-Fi precautions, and social media oversharing.',
+          risk: 'Oversharing personal information (phone numbers, Aadhaar card copies, birthdates, vacation plans) allows identity thieves to impersonate you, open fraudulent loans, or target you with tailored scams.',
+          warnings: [
+            'Mobile apps requesting unnecessary permissions (contacts, gallery, SMS) for basic tools like calculators or flashlights.',
+            'Public Wi-Fi networks without password encryption used for logging into sensitive accounts.',
+            'Posting photos of boarding passes, PAN cards, or entrance hall tickets publicly.'
+          ],
+          actions: [
+            'Audit app permissions on your smartphone and revoke access to storage and contacts for unrelated apps.',
+            'Use a Virtual Private Network (VPN) or avoid logging into banking apps on open public Wi-Fi.',
+            'Mask or blur sensitive identification documents before sharing online.'
+          ],
+          avoids: [
+            'Never upload high-resolution images of identity cards (Aadhaar, PAN, Passport) to unverified websites.',
+            'Avoid sharing real-time vacation travel plans publicly on social media.'
+          ],
+          example: '"Free flashlight app requires access to your entire contacts list, camera, device storage, and location to function properly."'
+        }
+      ];
+
+      function renderTopicCards(topicsToRender) {
+        if (!topicCardsGrid) return;
+        topicCardsGrid.innerHTML = '';
+
+        if (topicsToRender.length === 0) {
+          topicCardsGrid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><p>No matching cybersecurity topics found.</p></div>`;
+          if (topicCountLabel) topicCountLabel.textContent = '0 Topics';
+          return;
+        }
+
+        if (topicCountLabel) topicCountLabel.textContent = `${topicsToRender.length} Topics`;
+
+        topicsToRender.forEach(topic => {
+          const card = document.createElement('div');
+          card.className = 'action-card card topic-card';
+          card.setAttribute('role', 'button');
+          card.setAttribute('tabindex', '0');
+          card.innerHTML = `
+            <div class="card-icon icon-cyan">${topic.icon}</div>
+            <h4>${topic.title}</h4>
+            <p>${topic.description}</p>
+            <button type="button" class="btn btn-secondary">View Guidance</button>
+          `;
+
+          card.addEventListener('click', () => {
+            displayGuidance(topic);
+          });
+
+          card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              displayGuidance(topic);
+            }
+          });
+
+          topicCardsGrid.appendChild(card);
+        });
+      }
+
+      function displayGuidance(topic) {
+        if (!assistantResultsPanel) return;
+
+        guidanceTopicTitle.textContent = topic.title;
+        guidanceRisk.textContent = topic.risk;
+
+        guidanceWarnings.innerHTML = '';
+        topic.warnings.forEach((warn, idx) => {
+          const li = document.createElement('li');
+          li.innerHTML = `<div class="rec-bullet">${idx + 1}</div><span>${warn}</span>`;
+          guidanceWarnings.appendChild(li);
+        });
+
+        guidanceActions.innerHTML = '';
+        topic.actions.forEach((act, idx) => {
+          const li = document.createElement('li');
+          li.innerHTML = `<div class="rec-bullet">${idx + 1}</div><span>${act}</span>`;
+          guidanceActions.appendChild(li);
+        });
+
+        guidanceAvoids.innerHTML = '';
+        topic.avoids.forEach((avo, idx) => {
+          const li = document.createElement('li');
+          li.innerHTML = `<div class="rec-bullet">${idx + 1}</div><span>${avo}</span>`;
+          guidanceAvoids.appendChild(li);
+        });
+
+        guidanceExample.textContent = topic.example;
+
+        if (guidanceEmergencyBox) {
+          if (['otp-fraud', 'upi-scams', 'impersonation', 'online-shopping'].includes(topic.id)) {
+            guidanceEmergencyBox.style.display = 'block';
+          } else {
+            guidanceEmergencyBox.style.display = 'none';
+          }
+        }
+
+        assistantResultsPanel.style.display = 'block';
+        assistantResultsPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      function handleUserQuery() {
+        const query = assistantQuery.value.trim().toLowerCase();
+        if (!query) {
+          if (assistantErrorMsg) {
+            assistantErrorMsg.textContent = 'Please enter a question or select a topic below.';
+            assistantErrorMsg.style.display = 'block';
+          }
+          return;
+        }
+
+        if (assistantErrorMsg) assistantErrorMsg.style.display = 'none';
+
+        if (query.includes('lost money') || query.includes('scammed') || query.includes('fraud') || query.includes('stolen') || query.includes('lost 1930') || query.includes('stolen money')) {
+          displayGuidance(safetyTopics[0]);
+          return;
+        }
+
+        let matchedTopic = null;
+        let maxMatches = 0;
+
+        safetyTopics.forEach(topic => {
+          let score = 0;
+          topic.keywords.forEach(kw => {
+            if (query.includes(kw)) {
+              score++;
+            }
+          });
+          if (score > maxMatches) {
+            maxMatches = score;
+            matchedTopic = topic;
+          }
+        });
+
+        if (matchedTopic && maxMatches > 0) {
+          displayGuidance(matchedTopic);
+        } else {
+          if (assistantResultsPanel) {
+            guidanceTopicTitle.textContent = 'Guidance Not Found';
+            guidanceRisk.textContent = 'We could not match your exact question to our predefined local guidance topics. Please browse our cybersecurity topic cards below or refine your search keywords.';
+            guidanceWarnings.innerHTML = `<li><div class="rec-bullet">!</div><span>Try asking about OTPs, UPI requests, phishing links, fake jobs, or account security.</span></li>`;
+            guidanceActions.innerHTML = `<li><div class="rec-bullet">i</div><span>Select any of the 8 interactive topic cards below for detailed safety instructions.</span></li>`;
+            guidanceAvoids.innerHTML = `<li><div class="rec-bullet">x</div><span>Never enter real passwords, OTPs, or banking credentials into any text box or chat prompt.</span></li>`;
+            guidanceExample.textContent = 'Example valid questions: "Someone is asking for my OTP" or "How do I recognize a phishing link?"';
+            if (guidanceEmergencyBox) guidanceEmergencyBox.style.display = 'none';
+
+            assistantResultsPanel.style.display = 'block';
+            assistantResultsPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      }
+
+      if (assistantAskBtn) {
+        assistantAskBtn.addEventListener('click', handleUserQuery);
+      }
+
+      if (assistantQuery) {
+        assistantQuery.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            handleUserQuery();
+          } else {
+            if (assistantErrorMsg) assistantErrorMsg.style.display = 'none';
+          }
+        });
+      }
+
+      if (assistantClearBtn) {
+        assistantClearBtn.addEventListener('click', () => {
+          assistantQuery.value = '';
+          if (assistantErrorMsg) assistantErrorMsg.style.display = 'none';
+          if (assistantResultsPanel) assistantResultsPanel.style.display = 'none';
+        });
+      }
+
+      if (topicSearchInput) {
+        topicSearchInput.addEventListener('input', () => {
+          const term = topicSearchInput.value.trim().toLowerCase();
+          if (!term) {
+            renderTopicCards(safetyTopics);
+            return;
+          }
+
+          const filtered = safetyTopics.filter(t => 
+            t.title.toLowerCase().includes(term) || 
+            t.description.toLowerCase().includes(term) ||
+            t.keywords.some(kw => kw.includes(term))
+          );
+          renderTopicCards(filtered);
+        });
+      }
+
+      function updateChecklistCounter() {
+        let checkedCount = 0;
+        safetyCheckboxes.forEach(box => {
+          if (box.checked) checkedCount++;
+        });
+        if (checklistCounter) {
+          checklistCounter.textContent = `${checkedCount} / ${safetyCheckboxes.length} Checked`;
+          if (checkedCount === safetyCheckboxes.length) {
+            checklistCounter.className = 'badge badge-low';
+          } else if (checkedCount > 0) {
+            checklistCounter.className = 'badge badge-moderate';
+          } else {
+            checklistCounter.className = 'badge badge-step';
+          }
+        }
+      }
+
+      safetyCheckboxes.forEach(box => {
+        box.addEventListener('change', updateChecklistCounter);
+      });
+
+      renderTopicCards(safetyTopics);
 
     });
   </script>
